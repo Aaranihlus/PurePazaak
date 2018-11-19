@@ -1,0 +1,83 @@
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+// Font Awesome
+@import '~@fortawesome/fontawesome-free/css/all.min.css';
+
+html, body {
+    color: #636b6f;
+    font-weight: 200;
+    height: 100vh;
+    margin: 0;
+    overflow-y: hidden;
+    background: url('/images/bg.png');
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+}
+
+.card {
+  min-height: 16vh;
+  max-height: 16vh;
+  background-color: black;
+  border:2px solid white;
+  border-radius: 10px;
+  max-width: 6vw;
+  min-width: 6vw;
+  margin: 1%;
+}
+
+.card-image {
+  width:100%;
+  height:100%;
+}
+
+.turn-inactive {
+  color: grey;
+}
+
+.turn-active {
+  color: red;
+}
+
+.card-row {
+  display: flex;
+  justify-content: center;
+}
+
+.game-mode-panel {
+  border:2px solid white;
+  border-radius: 8px;
+  background-color:rgba(0, 0, 0, 1);
+  text-align: center;
+  min-height: 25vh;
+  padding: 4%;
+}
+
+.profile-panel {
+  border-bottom: 1px solid grey;
+  display: flex;
+  flex-direction: row-reverse;
+  background-color:rgba(0, 0, 0, 1);
+  align-items: baseline;
+  padding-right: 4%;
+  margin-bottom: 5px;
+}
+
+.profile-panel-item {
+  margin: 8px;
+  //border: 2px solid $yellow;
+}
+
+@font-face {
+  font-family: 'StarWars';
+  src: url('Starjedi.ttf');
+}
+
+h1, h2, h3, h4, h5, h6, p, span, a, html, body, div {
+  font-family: 'StarWars';
+  color: $yellow;
+  line-height: 1.2;
+}
