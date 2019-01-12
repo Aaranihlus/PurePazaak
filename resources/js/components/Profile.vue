@@ -2,7 +2,7 @@
   <div class="profile-panel" v-show="ShowProfile">
 
     <div class="profile-panel-item">
-      <p>{{ this.Username }}</p>
+      {{ this.Username }}
     </div>
 
     <div class="profile-panel-item" title="Deck Builder">
@@ -10,11 +10,11 @@
     </div>
 
     <div class="profile-panel-item" title="Total Games Played">
-      <p><i class="far fa-play-circle"></i> {{ this.GamesPlayed }}</p>
+      <i class="far fa-play-circle"></i> {{ this.GamesPlayed }}
     </div>
 
     <div class="profile-panel-item" title="Total Games Won">
-      <p><i class="fas fa-trophy"></i> {{ this.Wins }}</p>
+      <i class="fas fa-trophy"></i> {{ this.Wins }}
     </div>
 
     <div class="profile-panel-item" title="Credit Balance">
@@ -30,6 +30,7 @@ export default {
 
   data () {
     return {
+      UserID: 0,
       Username: '',
       Credits: 0,
       Wins: 0,
@@ -39,20 +40,36 @@ export default {
   },
 
   created () {
-    this.GetPlayerProfile()
+    this.GetPlayerProfile();
     this.$eventHub.$on('ProfileFound', this.GetPlayerProfile)
     this.$eventHub.$on('ProfileCreated', this.GetPlayerProfile)
+
+    /*if (localStorage.ActiveGameID) {
+      axios.post('/game/'+ localStorage.ActiveGameID +'/leaveGame', {
+        user_id: localStorage.UserID
+      })
+      .then((response) => {
+        console.log(response)
+      });
+    }*/
+
   },
 
   methods: {
 
     GetPlayerProfile () {
-      if (localStorage.Username) {
+      if (localStorage.UserID) {
+        this.UserID = localStorage.UserID
         this.Username = localStorage.Username
         this.Credits = localStorage.Credits
         this.Wins = localStorage.Wins
         this.GamesPlayed = localStorage.GamesPlayed
         this.ShowProfile = true
+        // Console log retrieved user data
+        axios.get('/user/data/' + localStorage.UserID).then((response) => {
+          console.log('User Data:')
+          console.log(response)
+        })
       }
     }
 

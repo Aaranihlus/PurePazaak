@@ -377,33 +377,6 @@ module.exports = {
 /* 1 */
 /***/ (function(module, exports) {
 
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
 /* globals __VUE_SSR_CONTEXT__ */
 
 // IMPORTANT: Do NOT use ES2015 features in this file.
@@ -507,6 +480,33 @@ module.exports = function normalizeComponent (
     options: options
   }
 }
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
 
 
 /***/ }),
@@ -3154,7 +3154,7 @@ Popper.Defaults = Defaults;
 /* harmony default export */ __webpack_exports__["default"] = (Popper);
 //# sourceMappingURL=popper.js.map
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(2)))
 
 /***/ }),
 /* 5 */
@@ -13990,7 +13990,7 @@ module.exports = Cancel;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(13);
-module.exports = __webpack_require__(57);
+module.exports = __webpack_require__(63);
 
 
 /***/ }),
@@ -14021,6 +14021,8 @@ Vue.component('create-profile', __webpack_require__(45));
 Vue.component('profile', __webpack_require__(48));
 Vue.component('game', __webpack_require__(51));
 Vue.component('deck-builder', __webpack_require__(54));
+Vue.component('game-list', __webpack_require__(57));
+Vue.component('game-listing', __webpack_require__(60));
 
 // const files = require.context('./', true, /\.vue$/i)
 
@@ -31219,7 +31221,7 @@ window.Echo = new __WEBPACK_IMPORTED_MODULE_0_laravel_echo___default.a({
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(16)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(16)(module)))
 
 /***/ }),
 /* 16 */
@@ -56839,7 +56841,7 @@ Vue.compile = compileToFunctions;
 
 module.exports = Vue;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(40).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(40).setImmediate))
 
 /***/ }),
 /* 40 */
@@ -56909,7 +56911,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
                          (typeof global !== "undefined" && global.clearImmediate) ||
                          (this && this.clearImmediate);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
 /* 41 */
@@ -57102,14 +57104,14 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(7)))
 
 /***/ }),
 /* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(2)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(43)
 /* template */
@@ -57192,42 +57194,80 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {
-    return {
-      showGameModes: true,
-      versusChosen: false
-    };
-  },
-  created: function created() {
-    var _this = this;
-
-    this.$eventHub.$on('NoProfileFound', this.ChooseGameMode);
-
-    this.$eventHub.$on('ProfileFound', function () {
-      _this.showGameModes = true;
-    });
-
-    this.$eventHub.$on('ProfileCreated', function () {
-      _this.showGameModes = true;
-    });
-  },
-
-
-  methods: {
-    ChooseGameMode: function ChooseGameMode() {
-      this.showGameModes = false;
+    data: function data() {
+        return {
+            showGameModes: true,
+            versusChosen: false,
+            createGameActive: false,
+            gameWager: 0
+        };
     },
-    ClickVersus: function ClickVersus() {
-      this.versusChosen = true;
-      this.showGameModes = false;
+    created: function created() {
+        var _this = this;
+
+        this.$eventHub.$on('NoProfileFound', this.ChooseGameMode);
+
+        this.$eventHub.$on('ProfileFound', function () {
+            _this.showGameModes = true;
+        });
+
+        this.$eventHub.$on('ProfileCreated', function () {
+            _this.showGameModes = true;
+        });
     },
-    BackToGameModes: function BackToGameModes() {
-      this.versusChosen = false;
-      this.showGameModes = true;
+
+
+    methods: {
+        ChooseGameMode: function ChooseGameMode() {
+            this.showGameModes = false;
+        },
+        CreateNewGame: function CreateNewGame() {
+            axios.post('/game', {
+                Wager: this.gameWager,
+                UserID: localStorage.UserID
+            }).then(function (response) {
+                if (response.status == 200) {
+                    location.assign(response.data);
+                }
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        CancelCreateGame: function CancelCreateGame() {
+            this.createGameActive = false;
+        },
+        OpenCreateGame: function OpenCreateGame() {
+            this.createGameActive = true;
+        },
+        ClickVersus: function ClickVersus() {
+            this.versusChosen = true;
+            this.showGameModes = false;
+        },
+        BackToGameModes: function BackToGameModes() {
+            this.versusChosen = false;
+            this.showGameModes = true;
+        }
     }
-  }
 });
 
 /***/ }),
@@ -57261,8 +57301,7 @@ var render = function() {
         _c(
           "div",
           {
-            staticClass: "col-5 game-mode-panel",
-            staticStyle: { cursor: "pointer" },
+            staticClass: "col-5 game-mode-panel interactive",
             on: {
               click: function($event) {
                 _vm.ClickVersus()
@@ -57295,11 +57334,27 @@ var render = function() {
         staticStyle: { "margin-top": "25vh" }
       },
       [
-        _vm._m(1),
+        _c("div", { staticClass: "col-5 game-mode-panel" }, [
+          _c("i", { staticClass: "fas fa-plus-square fa-5x" }),
+          _vm._v(" "),
+          _c(
+            "h2",
+            {
+              on: {
+                click: function($event) {
+                  _vm.OpenCreateGame()
+                }
+              }
+            },
+            [_vm._v("Create Game")]
+          ),
+          _vm._v(" "),
+          _c("p", [_vm._v("Create a new public game")])
+        ]),
         _vm._v(" "),
         _c("div", { staticClass: "col-2" }),
         _vm._v(" "),
-        _vm._m(2),
+        _vm._m(1),
         _vm._v(" "),
         _c(
           "p",
@@ -57314,7 +57369,94 @@ var render = function() {
           [_c("i", { staticClass: "fas fa-angle-left" }), _vm._v(" Back")]
         )
       ]
-    )
+    ),
+    _vm._v(" "),
+    _vm.createGameActive
+      ? _c("div", { staticClass: "modal", staticStyle: { display: "block" } }, [
+          _c(
+            "div",
+            {
+              staticClass: "modal-dialog",
+              staticStyle: { border: "1px solid white" },
+              attrs: { role: "document" }
+            },
+            [
+              _c("div", { staticClass: "modal-content" }, [
+                _vm._m(2),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass: "modal-body text-left",
+                    staticStyle: { "background-color": "black" }
+                  },
+                  [
+                    _c("label", [_vm._v("Wager")]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.gameWager,
+                          expression: "gameWager"
+                        }
+                      ],
+                      attrs: { type: "number" },
+                      domProps: { value: _vm.gameWager },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.gameWager = $event.target.value
+                        }
+                      }
+                    })
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass: "modal-footer p-2",
+                    staticStyle: { "background-color": "black" }
+                  },
+                  [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "button" },
+                        on: {
+                          click: function($event) {
+                            _vm.CancelCreateGame()
+                          }
+                        }
+                      },
+                      [_vm._v(" Cancel ")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "button" },
+                        on: {
+                          click: function($event) {
+                            _vm.CreateNewGame()
+                          }
+                        }
+                      },
+                      [_vm._v(" Accept ")]
+                    )
+                  ]
+                )
+              ])
+            ]
+          )
+        ])
+      : _vm._e()
   ])
 }
 var staticRenderFns = [
@@ -57335,24 +57477,25 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "col-5 game-mode-panel" }, [
-      _c("i", { staticClass: "fas fa-plus-square fa-5x" }),
+      _c("i", { staticClass: "fas fa-sign-in-alt fa-5x" }),
       _vm._v(" "),
-      _c("h2", [_vm._v("Create Game")]),
+      _c("a", { attrs: { href: "/games" } }, [_c("h3", [_vm._v("Join Game")])]),
       _vm._v(" "),
-      _c("p", [_vm._v("Create a new public game")])
+      _c("p", [_vm._v("Join another players public game")])
     ])
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-5 game-mode-panel" }, [
-      _c("i", { staticClass: "fas fa-sign-in-alt fa-5x" }),
-      _vm._v(" "),
-      _c("h3", [_vm._v("Join Game")]),
-      _vm._v(" "),
-      _c("p", [_vm._v("Join another players public game")])
-    ])
+    return _c(
+      "div",
+      {
+        staticClass: "modal-header",
+        staticStyle: { "background-color": "black" }
+      },
+      [_c("h4", { staticClass: "modal-title" }, [_vm._v("Create New Game")])]
+    )
   }
 ]
 render._withStripped = true
@@ -57369,7 +57512,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(2)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(46)
 /* template */
@@ -57437,20 +57580,48 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  created: function created() {},
+  created: function created() {
+    this.CheckForPlayerProfile();
+  },
   data: function data() {
     return {
       Username: '',
-      showCreateProfileForm: false
+      showCreateProfileForm: false,
+      profileCreatedSuccessfully: false,
+      profileError: ''
     };
   },
 
 
   methods: {
     CheckForPlayerProfile: function CheckForPlayerProfile() {
-      if (!localStorage.Username) {
+      if (!localStorage.UserID) {
         this.showCreateProfileForm = true;
         this.$eventHub.$emit('NoProfileFound');
       } else {
@@ -57458,26 +57629,30 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         return true;
       }
     },
+    GoToMainMenu: function GoToMainMenu() {
+      this.$eventHub.$emit('ProfileCreated');
+      this.showCreateProfileForm = false;
+    },
     CreatePlayerProfile: function CreatePlayerProfile() {
+      var _this = this;
 
       if (this.Username == '') {
-        console.log('please enter a username');
+        this.profileError = 'please enter a username!';
+      } else if (this.Username.length > 12) {
+        this.profileError = 'chosen username is too long!';
       } else {
-
         axios.post('/user/store', {
           username: this.Username
         }).then(function (response) {
-          console.log(response);
+          _this.showCreateProfileForm = !_this.showCreateProfileForm;
+          localStorage.UserID = response.data.id;
+          localStorage.Username = _this.Username;
+          localStorage.Credits = 500;
+          localStorage.Wins = 0;
+          localStorage.GamesPlayed = 0;
         }).catch(function (error) {
-          console.log(error);
+          _this.profileError = 'username is already in use!';
         });
-
-        //localStorage.Username = this.Username
-        //localStorage.Credits = 500
-        //localStorage.Wins = 0
-        //localStorage.GamesPlayed = 0
-        //this.$eventHub.$emit('ProfileCreated')
-        //this.showCreateProfileForm = false
       }
     }
   }
@@ -57494,103 +57669,216 @@ var render = function() {
   return _c(
     "div",
     {
-      directives: [
-        {
-          name: "show",
-          rawName: "v-show",
-          value: _vm.showCreateProfileForm,
-          expression: "showCreateProfileForm"
-        }
-      ],
-      staticClass: "container text-center",
-      staticStyle: {
-        "margin-top": "30vh",
-        "background-color": "black",
-        padding: "2%",
-        "border-radius": "12px",
-        border: "1px solid white"
-      }
+      staticClass: "container-fluid text-center flex flex-center",
+      staticStyle: { width: "100vh", height: "100vh", "overflow-x": "hidden" }
     },
     [
-      _c("h1", [_vm._v("Welcome to Pure Pazaak")]),
-      _vm._v(" "),
-      _c("p", [
-        _vm._v("Before you can play, you must first choose a username")
-      ]),
-      _vm._v(" "),
       _c(
-        "form",
+        "transition",
         {
-          directives: [
-            {
-              name: "show",
-              rawName: "v-show",
-              value: !_vm.CheckForPlayerProfile(),
-              expression: "!CheckForPlayerProfile()"
-            }
-          ],
+          attrs: {
+            appear: "",
+            "enter-active-class": "animated bounceInRight",
+            "leave-active-class": "animated bounceOutLeft"
+          },
           on: {
-            submit: function($event) {
-              $event.preventDefault()
-              _vm.CreatePlayerProfile()
+            "after-leave": function($event) {
+              _vm.profileCreatedSuccessfully = true
             }
           }
         },
         [
           _c(
             "div",
-            { staticClass: "row mx-auto", staticStyle: { "max-width": "50%" } },
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.showCreateProfileForm,
+                  expression: "showCreateProfileForm"
+                }
+              ],
+              staticClass: "round-border",
+              staticStyle: {
+                "background-color": "black",
+                padding: "2%",
+                width: "100%"
+              }
+            },
             [
-              _c("div", { staticClass: "col-8" }, [
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.Username,
-                      expression: "Username"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  attrs: {
-                    type: "text",
-                    name: "username",
-                    placeholder: "Choose your username"
-                  },
-                  domProps: { value: _vm.Username },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.Username = $event.target.value
-                    }
-                  }
-                })
+              _c("h1", [_vm._v("Welcome to Pure Pazaak")]),
+              _vm._v(" "),
+              _c("p", [
+                _vm._v("Before you can play, you must first choose a username")
               ]),
               _vm._v(" "),
-              _vm._m(0)
+              _c(
+                "form",
+                {
+                  on: {
+                    submit: function($event) {
+                      $event.preventDefault()
+                      _vm.CreatePlayerProfile()
+                    }
+                  }
+                },
+                [
+                  _c(
+                    "div",
+                    {
+                      staticClass: "row mx-auto",
+                      staticStyle: { "max-width": "50%" }
+                    },
+                    [
+                      _c("div", { staticClass: "col-8" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.Username,
+                              expression: "Username"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: {
+                            type: "text",
+                            name: "username",
+                            placeholder: "Choose your username"
+                          },
+                          domProps: { value: _vm.Username },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.Username = $event.target.value
+                            }
+                          }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-4" }, [
+                        _c("input", {
+                          staticClass: "btn btn-primary",
+                          staticStyle: { width: "100%" },
+                          attrs: { type: "submit", value: "Confirm" }
+                        })
+                      ])
+                    ]
+                  )
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "transition",
+                { attrs: { "enter-active-class": "animated pulse" } },
+                [
+                  _c(
+                    "div",
+                    {
+                      directives: [
+                        {
+                          name: "show",
+                          rawName: "v-show",
+                          value: _vm.profileError,
+                          expression: "profileError"
+                        }
+                      ],
+                      staticClass: "round-border text-center",
+                      staticStyle: {
+                        "background-color": "#660000",
+                        padding: "2%",
+                        "margin-top": "2vh"
+                      }
+                    },
+                    [
+                      _c("i", { staticClass: "fas fa-exclamation-triangle" }),
+                      _vm._v(" " + _vm._s(this.profileError) + "\n        ")
+                    ]
+                  )
+                ]
+              )
+            ],
+            1
+          )
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "transition",
+        {
+          attrs: {
+            "enter-active-class": "animated bounceInRight",
+            "leave-active-class": "animated bounceOutLeft"
+          },
+          on: {
+            "after-leave": function($event) {
+              _vm.GoToMainMenu()
+            }
+          }
+        },
+        [
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.profileCreatedSuccessfully,
+                  expression: "profileCreatedSuccessfully"
+                }
+              ],
+              staticClass: "round-border",
+              staticStyle: {
+                "background-color": "black",
+                padding: "2%",
+                width: "100%"
+              }
+            },
+            [
+              _c("h1", [_vm._v("Congratulations!")]),
+              _vm._v(" "),
+              _c("p", [
+                _vm._v(
+                  "Hello " +
+                    _vm._s(this.Username) +
+                    ", here are some credits to get you started"
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "flex flex-center" }, [
+                _c("img", {
+                  staticClass: "img-fluid",
+                  staticStyle: { width: "15%" },
+                  attrs: { src: "/images/credit.png" }
+                }),
+                _vm._v("500\n      ")
+              ]),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary",
+                  on: {
+                    click: function($event) {
+                      _vm.profileCreatedSuccessfully = false
+                    }
+                  }
+                },
+                [_vm._v("Play")]
+              )
             ]
           )
         ]
       )
-    ]
+    ],
+    1
   )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-4" }, [
-      _c("input", {
-        staticClass: "btn btn-primary",
-        staticStyle: { width: "100%" },
-        attrs: { type: "submit", value: "Confirm" }
-      })
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -57605,7 +57893,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(2)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(49)
 /* template */
@@ -57684,6 +57972,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      UserID: 0,
       Username: '',
       Credits: 0,
       Wins: 0,
@@ -57695,17 +57984,32 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     this.GetPlayerProfile();
     this.$eventHub.$on('ProfileFound', this.GetPlayerProfile);
     this.$eventHub.$on('ProfileCreated', this.GetPlayerProfile);
+
+    /*if (localStorage.ActiveGameID) {
+      axios.post('/game/'+ localStorage.ActiveGameID +'/leaveGame', {
+        user_id: localStorage.UserID
+      })
+      .then((response) => {
+        console.log(response)
+      });
+    }*/
   },
 
 
   methods: {
     GetPlayerProfile: function GetPlayerProfile() {
-      if (localStorage.Username) {
+      if (localStorage.UserID) {
+        this.UserID = localStorage.UserID;
         this.Username = localStorage.Username;
         this.Credits = localStorage.Credits;
         this.Wins = localStorage.Wins;
         this.GamesPlayed = localStorage.GamesPlayed;
         this.ShowProfile = true;
+        // Console log retrieved user data
+        axios.get('/user/data/' + localStorage.UserID).then(function (response) {
+          console.log('User Data:');
+          console.log(response);
+        });
       }
     }
   }
@@ -57735,7 +58039,7 @@ var render = function() {
     },
     [
       _c("div", { staticClass: "profile-panel-item" }, [
-        _c("p", [_vm._v(_vm._s(this.Username))])
+        _vm._v("\n    " + _vm._s(this.Username) + "\n  ")
       ]),
       _vm._v(" "),
       _vm._m(0),
@@ -57747,10 +58051,8 @@ var render = function() {
           attrs: { title: "Total Games Played" }
         },
         [
-          _c("p", [
-            _c("i", { staticClass: "far fa-play-circle" }),
-            _vm._v(" " + _vm._s(this.GamesPlayed))
-          ])
+          _c("i", { staticClass: "far fa-play-circle" }),
+          _vm._v(" " + _vm._s(this.GamesPlayed) + "\n  ")
         ]
       ),
       _vm._v(" "),
@@ -57761,10 +58063,8 @@ var render = function() {
           attrs: { title: "Total Games Won" }
         },
         [
-          _c("p", [
-            _c("i", { staticClass: "fas fa-trophy" }),
-            _vm._v(" " + _vm._s(this.Wins))
-          ])
+          _c("i", { staticClass: "fas fa-trophy" }),
+          _vm._v(" " + _vm._s(this.Wins) + "\n  ")
         ]
       ),
       _vm._v(" "),
@@ -57817,7 +58117,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(2)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(52)
 /* template */
@@ -57951,107 +58251,175 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data() {
-        return {
+  data: function data() {
+    return {
 
-            players: {
-                1: {
-                    name: 'Chungus',
-                    hand: {},
-                    set_score: 0,
-                    sets_won: 0,
-                    num_cards_in_field: 0,
-                    cards_in_field: []
-                },
-                2: {
-                    name: 'Atton Rand',
-                    hand: {},
-                    set_score: 0,
-                    sets_won: 0,
-                    num_cards_in_field: 0,
-                    cards_in_field: []
-                }
-            },
+      gameData: {},
+      myPlayerIndex: 0,
+      gameID: window.location.href.split('/').pop(),
+      players: {
+        1: { id: '', username: '', side_deck: [], num_cards_in_field: 0, cards_in_field: [] },
+        2: { id: '', username: '', side_deck: [], num_cards_in_field: 0, cards_in_field: [] }
+      },
+      totalCardsDrawn: 0,
+      currentPlayerTurn: 1,
+      nextDealerCard: 0,
 
-            totalCardsDrawn: 0,
-            currentPlayerTurn: 1,
-            nextDealerCard: 0,
+      dealerCards: {
+        1: { img: '/images/g1.png' },
+        2: { img: '/images/g2.png' },
+        3: { img: '/images/g3.png' },
+        4: { img: '/images/g4.png' },
+        5: { img: '/images/g5.png' },
+        6: { img: '/images/g6.png' },
+        7: { img: '/images/g7.png' },
+        8: { img: '/images/g8.png' },
+        9: { img: '/images/g9.png' },
+        10: { img: '/images/g10.png' }
+      }
 
-            dealerCards: {
-                1: {
-                    img: '/images/g1.png'
-                },
-                2: {
-                    img: '/images/g2.png'
-                },
-                3: {
-                    img: '/images/g3.png'
-                },
-                4: {
-                    img: '/images/g4.png'
-                },
-                5: {
-                    img: '/images/g5.png'
-                },
-                6: {
-                    img: '/images/g6.png'
-                },
-                7: {
-                    img: '/images/g7.png'
-                },
-                8: {
-                    img: '/images/g8.png'
-                },
-                9: {
-                    img: '/images/g9.png'
-                },
-                10: {
-                    img: '/images/g10.png'
-                }
-            }
+    };
+  },
+  mounted: function mounted() {
+    //this.GetPlayerSideDeck();
+    //this.DealCardToPlayer(1);
+    //console.log(this.players[1].username)
+  },
+  created: function created() {
+    var _this = this;
 
-        };
+    // Get Game Data
+    axios.get('/game/data/' + this.gameID).then(function (response) {
+      _this.gameData = response.data;
+
+      // The creator of the game always joins first, so we will grab their data and assign it to player 1
+      axios.get('/user/data/' + _this.gameData.creator_id).then(function (response) {
+        _this.AddPlayer(1, response);
+      });
+
+      // When the opponent joins the game, we retrive their data and store them as player 2
+      axios.get('/user/data/' + _this.gameData.opponent_id).then(function (response) {
+        _this.AddPlayer(2, response);
+      });
+    });
+
+    // An opponent_id will not be available as soon as the game starts, so the creator of the game must listen for another player joining
+    window.Echo.private('join.game.' + this.gameID).listen('PlayerJoinedGame', function (e) {
+      console.log('Player is joining the game!');
+      // The player that joins is assigned to player 2
+      axios.get('/user/data/' + e.opponent.id).then(function (response) {
+        _this.AddPlayer(2, response);
+      });
+    });
+
+    window.Echo.private('player.endturn.game.' + this.gameID).listen('PlayerEndTurn', function (e) {
+      console.log(e);
+      _this.DealCardToPlayer(e.data.player_index, e.random_dealer_card);
+    });
+
+    window.Echo.private('player.forfeit.game.' + this.gameID).listen('PlayerForfeit', function (e) {
+      console.log(e);
+    });
+
+    window.Echo.private('player.playcard.game.' + this.gameID).listen('PlayerPlayCard', function (e) {
+      console.log(e);
+    });
+
+    window.Echo.private('player.playcard.game.' + this.gameID).listen('PlayerStand', function (e) {
+      console.log(e);
+    });
+
+    /*window.Echo.private('player.leftgame.game.' + this.gameID).listen('PlayerLeftGame', e => {
+      console.log(e);
+    });*/
+  },
+
+
+  methods: {
+    EndTurn: function EndTurn() {
+      axios.post('/game/' + this.gameID + '/endturn', {
+        username: localStorage.Username,
+        user_id: localStorage.UserID,
+        game_id: this.gameID,
+        player_index: this.myPlayerIndex
+      }).then(function (response) {
+        console.log(response);
+      });
     },
-    mounted: function mounted() {
-        this.DealCardToPlayer(1);
+    Stand: function Stand() {
+      axios.post('/game/' + this.gameID + '/setStand', {
+        username: localStorage.Username,
+        user_id: localStorage.UserID,
+        game_id: this.gameID
+      }).then(function (response) {
+        console.log(response);
+      });
     },
+    Forfeit: function Forfeit() {
+      axios.post('/game/' + this.gameID + '/forfeitGame', {
+        username: localStorage.Username,
+        user_id: localStorage.UserID,
+        game_id: this.gameID
+      }).then(function (response) {
+        console.log(response);
+      });
+    },
+    AddPlayer: function AddPlayer(PlayerNumber, Data) {
+      console.log(Data);
+      this.players[PlayerNumber].username = Data.data.username;
+      this.players[PlayerNumber].id = Data.data.id;
+      this.players[PlayerNumber].side_deck = [];
+      var sideDeckCards = JSON.parse(Data.data.side_deck);
+      for (var i = 0; i < 4; i++) {
+        this.players[PlayerNumber].side_deck.push(sideDeckCards[Math.floor(Math.random() * 10 + 0)]);
+      }
 
+      if (this.players[PlayerNumber].id == localStorage.UserID) {
+        this.myPlayerIndex = PlayerNumber;
+      }
+    },
+    DealCardToPlayer: function DealCardToPlayer(playerNumber, dealerCard) {
+      this.PlaySound('DrawCard');
 
-    methods: {
-        EndTurn: function EndTurn() {
-            if (this.currentPlayerTurn === 1) {
-                this.currentPlayerTurn += 1;
-            } else {
-                this.currentPlayerTurn -= 1;
-            }
-            this.DealCardToPlayer(this.currentPlayerTurn);
-        },
-        DealCardToPlayer: function DealCardToPlayer(playerNumber) {
-            this.PlaySound();
-            this.nextDealerCard = Math.floor(Math.random() * 10 + 1);
-            this.players[playerNumber].num_cards_in_field += 1;
-            this.players[playerNumber].cards_in_field.push(this.nextDealerCard);
-            if (this.totalCardsDrawn === 0) {
-                window.$('#p1c1').append('<img class="card-image" src="' + this.dealerCards[this.nextDealerCard].img + '">');
-            } else {
-                window.$('#p' + playerNumber + 'c' + this.players[playerNumber].num_cards_in_field).append('<img class="card-image" src="' + this.dealerCards[this.nextDealerCard].img + '">');
-            }
-            this.totalCardsDrawn += 1;
-            this.UpdatePlayerScore();
-        },
-        UpdatePlayerScore: function UpdatePlayerScore() {
-            this.players[this.currentPlayerTurn].set_score = this.players[this.currentPlayerTurn].cards_in_field.reduce(function (a, b) {
-                return a + b;
-            }, 0);
-        },
-        PlaySound: function PlaySound() {
-            var audio = new Audio('/audio/DrawCard.wav');
-            audio.volume = 0.1;
-            audio.play();
-        }
+      this.nextDealerCard = dealerCard;
+      this.players[playerNumber].num_cards_in_field += 1;
+      this.players[playerNumber].cards_in_field.push(this.nextDealerCard);
+      if (this.totalCardsDrawn === 0) {
+        window.$('#p1c1').append('<img class="card-image" src="' + this.dealerCards[this.nextDealerCard].img + '">');
+      } else {
+        window.$('#p' + playerNumber + 'c' + this.players[playerNumber].num_cards_in_field).append('<img class="card-image" src="' + this.dealerCards[this.nextDealerCard].img + '">');
+      }
+      this.totalCardsDrawn += 1;
+      this.UpdatePlayerScore(playerNumber);
+
+      if (playerNumber == 1) {
+        this.currentPlayerTurn = 2;
+      } else {
+        this.currentPlayerTurn = 1;
+      }
+    },
+    PlaySideCard: function PlaySideCard(card, index, playerNumber) {
+      this.players[playerNumber].num_cards_in_field += 1;
+      window.$('#p' + playerNumber + 'c' + this.players[playerNumber].num_cards_in_field).append('<img class="card-image" src="' + this.players[playerNumber].side_deck[index].CardImage + '">');
+      this.players[1].side_deck.splice(index, 1);
+    },
+    UpdatePlayerScore: function UpdatePlayerScore() {
+      this.players[this.currentPlayerTurn].set_score = this.players[this.currentPlayerTurn].cards_in_field.reduce(function (a, b) {
+        return a + b;
+      }, 0);
+      if (this.players[this.currentPlayerTurn].set_score > 20) {
+        this.PlaySound('over20');
+      }
+    },
+    PlaySound: function PlaySound(SoundName) {
+      var audio = new Audio('/audio/' + SoundName + '.wav');
+      audio.volume = 0.1;
+      audio.play();
     }
+  }
 
 });
 
@@ -58067,25 +58435,7 @@ var render = function() {
     _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-6" }, [
         _c("div", { staticClass: "container" }, [
-          _c("h2", [
-            _c("i", {
-              directives: [
-                {
-                  name: "show",
-                  rawName: "v-show",
-                  value: this.currentPlayerTurn === 1,
-                  expression: "this.currentPlayerTurn === 1"
-                }
-              ],
-              staticClass: "fas fa-circle turn-active"
-            }),
-            _vm._v(
-              " " +
-                _vm._s(_vm.players[1].name) +
-                " - " +
-                _vm._s(_vm.players[1].set_score)
-            )
-          ]),
+          _c("h2", [_vm._v(_vm._s(_vm.players[1].username))]),
           _vm._v(" "),
           _c("i", { staticClass: "fas fa-award fa-2x turn-inactive" }),
           _vm._v(" "),
@@ -58101,12 +58451,6 @@ var render = function() {
           _vm._v(" "),
           _c("br"),
           _vm._v(" "),
-          _c("p", [_vm._v("Your hand")]),
-          _vm._v(" "),
-          _vm._m(3),
-          _vm._v(" "),
-          _c("br"),
-          _vm._v(" "),
           _c(
             "div",
             {
@@ -58114,49 +58458,88 @@ var render = function() {
                 {
                   name: "show",
                   rawName: "v-show",
-                  value: this.currentPlayerTurn == 1,
-                  expression: "this.currentPlayerTurn == 1"
+                  value: this.myPlayerIndex == 1,
+                  expression: "this.myPlayerIndex == 1"
                 }
               ]
             },
             [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-primary",
-                  on: {
-                    click: function($event) {
-                      _vm.EndTurn()
-                    }
-                  }
-                },
-                [_vm._v("End Turn")]
-              ),
+              _c("p", [_vm._v("Side Deck")]),
+              _vm._v(" "),
+              _vm.players[1].side_deck
+                ? _c(
+                    "div",
+                    { staticClass: "card-row" },
+                    _vm._l(this.players[1].side_deck, function(card, index) {
+                      return _c("div", {
+                        staticClass: "card",
+                        style: {
+                          backgroundImage: "url(" + card.CardImage + ")"
+                        },
+                        on: {
+                          click: function($event) {
+                            _vm.PlaySideCard(card, index, 1)
+                          }
+                        }
+                      })
+                    })
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _c("br"),
               _vm._v(" "),
               _c(
-                "button",
+                "div",
                 {
-                  staticClass: "btn btn-primary",
-                  on: {
-                    click: function($event) {
-                      _vm.EndTurn()
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: this.currentPlayerTurn == this.myPlayerIndex,
+                      expression: "this.currentPlayerTurn == this.myPlayerIndex"
                     }
-                  }
+                  ]
                 },
-                [_vm._v("Stand")]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-primary",
-                  on: {
-                    click: function($event) {
-                      _vm.EndTurn()
-                    }
-                  }
-                },
-                [_vm._v("Forfeit")]
+                [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary",
+                      on: {
+                        click: function($event) {
+                          _vm.EndTurn()
+                        }
+                      }
+                    },
+                    [_vm._v("End Turn")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary",
+                      on: {
+                        click: function($event) {
+                          _vm.Stand()
+                        }
+                      }
+                    },
+                    [_vm._v("Stand")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary",
+                      on: {
+                        click: function($event) {
+                          _vm.Forfeit()
+                        }
+                      }
+                    },
+                    [_vm._v("Forfeit")]
+                  )
+                ]
               )
             ]
           )
@@ -58165,43 +58548,21 @@ var render = function() {
       _vm._v(" "),
       _c("div", { staticClass: "col-6" }, [
         _c("div", { staticClass: "container" }, [
-          _c("h2", [
-            _vm._v(
-              _vm._s(_vm.players[2].set_score) +
-                " - " +
-                _vm._s(_vm.players[2].name) +
-                " "
-            ),
-            _c("i", {
-              directives: [
-                {
-                  name: "show",
-                  rawName: "v-show",
-                  value: this.currentPlayerTurn === 2,
-                  expression: "this.currentPlayerTurn === 2"
-                }
-              ],
-              staticClass: "fas fa-circle turn-active"
-            })
-          ]),
+          _c("h2", [_vm._v(_vm._s(_vm.players[2].username))]),
           _vm._v(" "),
           _c("i", { staticClass: "fas fa-award fa-2x turn-inactive" }),
           _vm._v(" "),
           _c("i", { staticClass: "fas fa-award fa-2x turn-inactive" }),
           _vm._v(" "),
           _c("i", { staticClass: "fas fa-award fa-2x turn-inactive" }),
+          _vm._v(" "),
+          _vm._m(3),
           _vm._v(" "),
           _vm._m(4),
           _vm._v(" "),
           _vm._m(5),
           _vm._v(" "),
-          _vm._m(6),
-          _vm._v(" "),
           _c("br"),
-          _vm._v(" "),
-          _c("p", [_vm._v("opponent hand")]),
-          _vm._v(" "),
-          _vm._m(7),
           _vm._v(" "),
           _c(
             "div",
@@ -58210,54 +58571,91 @@ var render = function() {
                 {
                   name: "show",
                   rawName: "v-show",
-                  value: this.currentPlayerTurn == 2,
-                  expression: "this.currentPlayerTurn == 2"
+                  value: this.myPlayerIndex == 2,
+                  expression: "this.myPlayerIndex == 2"
                 }
               ]
             },
             [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-primary",
-                  on: {
-                    click: function($event) {
-                      _vm.EndTurn()
-                    }
-                  }
-                },
-                [_vm._v("End Turn")]
-              ),
+              _c("p", [_vm._v("Side Deck")]),
+              _vm._v(" "),
+              _vm.players[2].side_deck
+                ? _c(
+                    "div",
+                    { staticClass: "card-row" },
+                    _vm._l(this.players[2].side_deck, function(card, index) {
+                      return _c("div", {
+                        staticClass: "card",
+                        style: {
+                          backgroundImage: "url(" + card.CardImage + ")"
+                        },
+                        on: {
+                          click: function($event) {
+                            _vm.PlaySideCard(card, index, 1)
+                          }
+                        }
+                      })
+                    })
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _c("br"),
               _vm._v(" "),
               _c(
-                "button",
+                "div",
                 {
-                  staticClass: "btn btn-primary",
-                  on: {
-                    click: function($event) {
-                      _vm.EndTurn()
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: this.currentPlayerTurn == this.myPlayerIndex,
+                      expression: "this.currentPlayerTurn == this.myPlayerIndex"
                     }
-                  }
+                  ]
                 },
-                [_vm._v("Stand")]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-primary",
-                  on: {
-                    click: function($event) {
-                      _vm.EndTurn()
-                    }
-                  }
-                },
-                [_vm._v("Forfeit")]
+                [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary",
+                      on: {
+                        click: function($event) {
+                          _vm.EndTurn()
+                        }
+                      }
+                    },
+                    [_vm._v("End Turn")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary",
+                      on: {
+                        click: function($event) {
+                          _vm.Stand()
+                        }
+                      }
+                    },
+                    [_vm._v("Stand")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary",
+                      on: {
+                        click: function($event) {
+                          _vm.Forfeit()
+                        }
+                      }
+                    },
+                    [_vm._v("Forfeit")]
+                  )
+                ]
               )
             ]
-          ),
-          _vm._v(" "),
-          _c("br")
+          )
         ])
       ])
     ])
@@ -58305,20 +58703,6 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-row" }, [
-      _c("div", { staticClass: "card" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "card" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "card" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "card" })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-row" }, [
       _c("div", { staticClass: "card", attrs: { id: "p2c1" } }),
       _vm._v(" "),
       _c("div", { staticClass: "card", attrs: { id: "p2c2" } }),
@@ -58349,20 +58733,6 @@ var staticRenderFns = [
       _vm._v(" "),
       _c("div", { staticClass: "card", attrs: { id: "p2c9" } })
     ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-row" }, [
-      _c("div", { staticClass: "card" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "card" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "card" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "card" })
-    ])
   }
 ]
 render._withStripped = true
@@ -58379,7 +58749,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(2)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(55)
 /* template */
@@ -58460,92 +58830,80 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    created: function created() {
-        this.GetSavedDeck();
+  created: function created() {
+    this.GetSavedDeck();
+  },
+  data: function data() {
+    return {
+      deckBuilderError: '',
+      selectedCards: [],
+      sideDeckCards: {
+        '+1': { img: '/images/p1.png' },
+        '+2': { img: '/images/p2.png' },
+        '+3': { img: '/images/p3.png' },
+        '+4': { img: '/images/p4.png' },
+        '+5': { img: '/images/p5.png' },
+        '+6': { img: '/images/p6.png' },
+        'flip1': { img: '/images/f1.png' },
+        'flip2': { img: '/images/f2.png' },
+        'flip3': { img: '/images/f3.png' },
+        'flip4': { img: '/images/f4.png' },
+        'flip5': { img: '/images/f5.png' },
+        'flip6': { img: '/images/f6.png' },
+        '-1': { img: '/images/n1.png' },
+        '-2': { img: '/images/n2.png' },
+        '-3': { img: '/images/n3.png' },
+        '-4': { img: '/images/n4.png' },
+        '-5': { img: '/images/n5.png' },
+        '-6': { img: '/images/n6.png' }
+      }
+    };
+  },
+
+
+  methods: {
+    AddCardToSideDeck: function AddCardToSideDeck(value, key) {
+      if (this.selectedCards.length < 10) {
+        this.selectedCards.push({ CardImage: value.img, CardID: key });
+      } else {
+        this.deckBuilderError = 'you can not select more than 10 cards!';
+      }
     },
-    data: function data() {
-        return {
-            selectedCards: [],
-
-            sideDeckCards: {
-                '+1': {
-                    img: '/images/p1.png'
-                },
-                '+2': {
-                    img: '/images/p2.png'
-                },
-                '+3': {
-                    img: '/images/p3.png'
-                },
-                '+4': {
-                    img: '/images/p4.png'
-                },
-                '+5': {
-                    img: '/images/p5.png'
-                },
-                '+6': {
-                    img: '/images/p6.png'
-                },
-                'flip1': {
-                    img: '/images/f1.png'
-                },
-                'flip2': {
-                    img: '/images/f2.png'
-                },
-                'flip3': {
-                    img: '/images/f3.png'
-                },
-                'flip4': {
-                    img: '/images/f4.png'
-                },
-                'flip5': {
-                    img: '/images/f5.png'
-                },
-                'flip6': {
-                    img: '/images/f6.png'
-                },
-                '-1': {
-                    img: '/images/n1.png'
-                },
-                '-2': {
-                    img: '/images/n2.png'
-                },
-                '-3': {
-                    img: '/images/n3.png'
-                },
-                '-4': {
-                    img: '/images/n4.png'
-                },
-                '-5': {
-                    img: '/images/n5.png'
-                },
-                '-6': {
-                    img: '/images/n6.png'
-                }
-            }
-        };
+    RemoveCardFromSideDeck: function RemoveCardFromSideDeck(value, key) {
+      this.selectedCards.splice(key, 1);
     },
+    GetSavedDeck: function GetSavedDeck() {
+      var _this = this;
 
+      axios.get('/user/get_sidedeck/' + localStorage.UserID).then(function (response) {
 
-    methods: {
-        AddCardToSideDeck: function AddCardToSideDeck(value, key) {
-            if (this.selectedCards.length < 10) {
-                this.selectedCards.push({ CardImage: value.img, CardID: key });
-            }
-        },
-        RemoveCardFromSideDeck: function RemoveCardFromSideDeck(value, key) {
-            this.selectedCards.splice(key, 1);
-        },
-        GetSavedDeck: function GetSavedDeck() {
-            this.selectedCards = JSON.parse(localStorage.sideDeck);
-        },
-        SaveDeck: function SaveDeck() {
-            localStorage.sideDeck = JSON.stringify(this.selectedCards);
-        },
-        ClearDeck: function ClearDeck() {
-            localStorage.sideDeck = '';
+        console.log(response);
+
+        if (typeof response.data == 'string') {
+          _this.selectedCards = [];
+        } else {
+          _this.selectedCards = response.data;
         }
+      });
+    },
+    SaveDeck: function SaveDeck() {
+      if (this.selectedCards.length < 10) {
+        this.deckBuilderError = 'you must select at least 10 cards for your side deck!';
+      } else {
+        axios.post('/user/update_sidedeck', {
+          user_id: localStorage.UserID,
+          chosen_side_deck: JSON.stringify(this.selectedCards)
+        }).then(function (response) {
+          console.log(response);
+        }).catch(function (error) {
+          console.log(error);
+        });
+      }
+    },
+    ClearDeck: function ClearDeck() {
+      this.selectedCards = [];
     }
+  }
 });
 
 /***/ }),
@@ -58646,6 +59004,280 @@ if (false) {
 
 /***/ }),
 /* 57 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(58)
+/* template */
+var __vue_template__ = __webpack_require__(59)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/GameList.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-73a4e51b", Component.options)
+  } else {
+    hotAPI.reload("data-v-73a4e51b", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 58 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    created: function created() {
+        var _this = this;
+
+        this.GetAllOpenGames();
+
+        window.Echo.channel('games').listen('NewGameCreated', function (e) {
+            _this.openGames.push(e.game);
+        });
+    },
+    data: function data() {
+        return {
+            openGames: []
+        };
+    },
+
+
+    methods: {
+        GetAllOpenGames: function GetAllOpenGames() {
+            var _this2 = this;
+
+            axios.get('/games/all').then(function (response) {
+                return _this2.openGames = response.data;
+            });
+        }
+    }
+});
+
+/***/ }),
+/* 59 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "container" }, [
+    _c(
+      "div",
+      { staticClass: "row" },
+      _vm._l(_vm.openGames, function(game, index) {
+        return _c("game-listing", {
+          key: game.id,
+          attrs: { game: game, index: index }
+        })
+      })
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-73a4e51b", module.exports)
+  }
+}
+
+/***/ }),
+/* 60 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(61)
+/* template */
+var __vue_template__ = __webpack_require__(62)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/GameListing.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-76e4b7d2", Component.options)
+  } else {
+    hotAPI.reload("data-v-76e4b7d2", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 61 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+
+    props: ['game'],
+
+    created: function created() {},
+    data: function data() {
+        return {};
+    },
+
+
+    methods: {
+        JoinGame: function JoinGame(GameID) {
+            axios.post('/game/join/' + GameID, {
+                user_id: localStorage.UserID,
+                game_id: GameID
+            }).then(function (response) {
+                if (response.status == 200) {
+                    location.assign(response.data);
+                }
+            });
+        }
+    }
+});
+
+/***/ }),
+/* 62 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "col-6" }, [
+    _c(
+      "div",
+      {
+        staticClass: "row",
+        staticStyle: { border: "1px solid white", padding: "6px" }
+      },
+      [
+        _c("div", { staticClass: "col-10" }, [
+          _c("p", [
+            _vm._v("Game "),
+            _c("i", { staticClass: "fas fa-hashtag" }),
+            _vm._v(
+              _vm._s(_vm.game.id) +
+                " " +
+                _vm._s(_vm.game.status) +
+                " Wager: " +
+                _vm._s(_vm.game.wager) +
+                " credit(s)"
+            )
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-2" }, [
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-primary",
+              staticStyle: { width: "100%" },
+              on: {
+                click: function($event) {
+                  _vm.JoinGame(_vm.game.id)
+                }
+              }
+            },
+            [_vm._v("Join")]
+          )
+        ])
+      ]
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-76e4b7d2", module.exports)
+  }
+}
+
+/***/ }),
+/* 63 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

@@ -21,6 +21,7 @@
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.5.0",
+        "animate.css": "^3.7.0",
         "laravel-echo": "^1.4.1",
         "pusher-js": "^4.3.1"
     }

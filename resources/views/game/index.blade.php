@@ -2,12 +2,12 @@
 
 @section('content')
 
-<h1>Games</h1>
+<div class="container text-center">
 
-@foreach($games as $game)
+  <h1>open Games</h1>
 
-  {{ $game }}
+  <game-list></game-list>
 
-@endforeach
+</div>
 
 @endsection('content')

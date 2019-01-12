@@ -10,22 +10,26 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class PlayerJoinedGame implements ShouldBroadcast
+class PlayerEndTurn implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $opponent;
     public $game_id;
+    public $data;
+    public $random_dealer_card;
+    public $player_index;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($opponent, $game_id)
+    public function __construct($game_id, $data, $random_dealer_card, $player_index)
     {
-        $this->opponent = $opponent;
         $this->game_id = $game_id;
+        $this->data = $data;
+        $this->random_dealer_card = $random_dealer_card;
+        $this->player_index = $player_index;
     }
 
     /**
@@ -35,6 +39,6 @@ class PlayerJoinedGame implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('join.game.' . $this->game_id);
+        return new PrivateChannel('player.endturn.game.' . $this->game_id);
     }
 }

@@ -15,6 +15,10 @@ class CreateGamesTable extends Migration
     {
         Schema::create('games', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('creator_id');
+            $table->integer('opponent_id');
+            $table->integer('wager');
+            $table->string('status')->default('open');
             $table->timestamps();
         });
     }

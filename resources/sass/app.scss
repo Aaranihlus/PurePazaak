@@ -7,6 +7,11 @@
 // Font Awesome
 @import '~@fortawesome/fontawesome-free/css/all.min.css';
 
+// Animate.css
+@import '~animate.css/animate.min.css';
+
+
+
 html, body {
     color: #636b6f;
     font-weight: 200;
@@ -18,15 +23,36 @@ html, body {
     background-repeat: no-repeat;
 }
 
+.flex {
+  display:flex;
+}
+
+.round-border {
+  border-radius:12px;
+  border:1px solid white;
+}
+
+.interactive {
+  cursor: pointer;
+}
+
+.flex-center {
+  justify-content: center;
+  align-items: center;
+}
+
 .card {
   min-height: 16vh;
   max-height: 16vh;
   background-color: black;
   border:2px solid white;
-  border-radius: 10px;
+  border-radius: 16px;
   max-width: 6vw;
   min-width: 6vw;
   margin: 1%;
+  background-attachment: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .card-image {
@@ -58,17 +84,18 @@ html, body {
 
 .profile-panel {
   border-bottom: 1px solid grey;
-  display: flex;
-  flex-direction: row-reverse;
   background-color:rgba(0, 0, 0, 1);
-  align-items: baseline;
   padding-right: 4%;
   margin-bottom: 5px;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: stretch;
 }
 
 .profile-panel-item {
-  margin: 8px;
-  //border: 2px solid $yellow;
+  margin-left: 2%;
+  flex-basis: auto;
+  align-self: baseline;
 }
 
 @font-face {
@@ -79,5 +106,4 @@ html, body {
 h1, h2, h3, h4, h5, h6, p, span, a, html, body, div {
   font-family: 'StarWars';
   color: $yellow;
-  line-height: 1.2;
 }
