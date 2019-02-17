@@ -40,9 +40,14 @@ export default {
   },
 
   created () {
-    this.GetPlayerProfile();
-    this.$eventHub.$on('ProfileFound', this.GetPlayerProfile)
-    this.$eventHub.$on('ProfileCreated', this.GetPlayerProfile)
+    //When the profile component is loaded, we will get the players data from the database
+    this.GetPlayerProfile()
+
+    //If a player profile is found, get the players data from the database
+    this.$eventHub.$on('ProfileFound', this.GetPlayerProfile())
+
+    //When a new profile is created, get the players data from the database
+    this.$eventHub.$on('ProfileCreated', this.GetPlayerProfile())
 
     /*if (localStorage.ActiveGameID) {
       axios.post('/game/'+ localStorage.ActiveGameID +'/leaveGame', {
@@ -65,7 +70,7 @@ export default {
         this.Wins = localStorage.Wins
         this.GamesPlayed = localStorage.GamesPlayed
         this.ShowProfile = true
-        // Console log retrieved user data
+
         axios.get('/user/data/' + localStorage.UserID).then((response) => {
           console.log('User Data:')
           console.log(response)
