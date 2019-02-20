@@ -1,7 +1,7 @@
 <template>
   <div class="col-6">
 
-    <div class="row" style="border:1px solid white; padding: 6px;">
+    <div class="row" style="border:1px solid white; padding: 6px; background-color:black;">
       <div class="col-10">
         <p>Game <i class="fas fa-hashtag"></i>{{ game.id }} {{ game.status }} Wager: {{ game.wager }} credit(s)</p>
       </div>

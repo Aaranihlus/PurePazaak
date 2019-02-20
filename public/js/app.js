@@ -57213,62 +57213,70 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data() {
-        return {
-            showGameModes: true,
-            versusChosen: false,
-            createGameActive: false,
-            gameWager: 0
-        };
+  data: function data() {
+    return {
+      showGameModes: true,
+      versusChosen: false,
+      createGameActive: false,
+      gameWager: 0
+    };
+  },
+  created: function created() {
+    var _this = this;
+
+    this.$eventHub.$on('NoProfileFound', this.ChooseGameMode);
+
+    this.$eventHub.$on('ProfileFound', function () {
+      _this.showGameModes = true;
+    });
+
+    this.$eventHub.$on('ProfileCreated', function () {
+      _this.showGameModes = true;
+    });
+  },
+
+
+  methods: {
+    ChooseGameMode: function ChooseGameMode() {
+      this.showGameModes = false;
     },
-    created: function created() {
-        var _this = this;
-
-        this.$eventHub.$on('NoProfileFound', this.ChooseGameMode);
-
-        this.$eventHub.$on('ProfileFound', function () {
-            _this.showGameModes = true;
-        });
-
-        this.$eventHub.$on('ProfileCreated', function () {
-            _this.showGameModes = true;
-        });
-    },
-
-
-    methods: {
-        ChooseGameMode: function ChooseGameMode() {
-            this.showGameModes = false;
-        },
-        CreateNewGame: function CreateNewGame() {
-            axios.post('/game', {
-                Wager: this.gameWager,
-                UserID: localStorage.UserID
-            }).then(function (response) {
-                if (response.status == 200) {
-                    location.assign(response.data);
-                }
-            }).catch(function (error) {
-                console.log(error);
-            });
-        },
-        CancelCreateGame: function CancelCreateGame() {
-            this.createGameActive = false;
-        },
-        OpenCreateGame: function OpenCreateGame() {
-            this.createGameActive = true;
-        },
-        ClickVersus: function ClickVersus() {
-            this.versusChosen = true;
-            this.showGameModes = false;
-        },
-        BackToGameModes: function BackToGameModes() {
-            this.versusChosen = false;
-            this.showGameModes = true;
+    CreateNewGame: function CreateNewGame() {
+      axios.post('/game', {
+        Wager: this.gameWager,
+        UserID: localStorage.UserID
+      }).then(function (response) {
+        if (response.status == 200) {
+          location.assign(response.data);
         }
+      }).catch(function (error) {
+        console.log(error);
+      });
+    },
+    CancelCreateGame: function CancelCreateGame() {
+      this.createGameActive = false;
+    },
+    OpenCreateGame: function OpenCreateGame() {
+      this.createGameActive = true;
+    },
+    ClickVersus: function ClickVersus() {
+      this.showGameModes = false;
+    },
+    BackToGameModes: function BackToGameModes() {
+      this.versusChosen = false;
+      this.showGameModes = true;
     }
+  }
 });
 
 /***/ }),
@@ -57279,226 +57287,264 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
-    _c(
-      "div",
-      {
-        directives: [
-          {
-            name: "show",
-            rawName: "v-show",
-            value: _vm.showGameModes,
-            expression: "showGameModes"
-          }
-        ],
-        staticClass: "row",
-        staticStyle: { "margin-top": "25vh" }
-      },
-      [
-        _vm._m(0),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-2" }),
-        _vm._v(" "),
-        _c(
-          "div",
-          {
-            staticClass: "col-5 game-mode-panel interactive",
-            on: {
-              click: function($event) {
-                _vm.ClickVersus()
-              }
-            }
+  return _c(
+    "div",
+    { staticClass: "container" },
+    [
+      _c(
+        "transition",
+        {
+          attrs: {
+            appear: "",
+            "enter-active-class": "animated bounceInRight",
+            "leave-active-class": "animated bounceOutLeft"
           },
-          [
-            _c("i", { staticClass: "fas fa-users fa-5x" }),
-            _vm._v(" "),
-            _c("h3", [_vm._v("versus")]),
-            _vm._v(" "),
-            _c("p", [_vm._v("Go head-to-head with other players")])
-          ]
-        )
-      ]
-    ),
-    _vm._v(" "),
-    _c(
-      "div",
-      {
-        directives: [
-          {
-            name: "show",
-            rawName: "v-show",
-            value: _vm.versusChosen,
-            expression: "versusChosen"
-          }
-        ],
-        staticClass: "row",
-        staticStyle: { "margin-top": "25vh" }
-      },
-      [
-        _c("div", { staticClass: "col-5 game-mode-panel" }, [
-          _c("i", { staticClass: "fas fa-plus-square fa-5x" }),
-          _vm._v(" "),
-          _c(
-            "h2",
-            {
-              on: {
-                click: function($event) {
-                  _vm.OpenCreateGame()
-                }
-              }
-            },
-            [_vm._v("Create Game")]
-          ),
-          _vm._v(" "),
-          _c("p", [_vm._v("Create a new public game")])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-2" }),
-        _vm._v(" "),
-        _vm._m(1),
-        _vm._v(" "),
-        _c(
-          "p",
-          {
-            staticStyle: { cursor: "pointer" },
-            on: {
-              click: function($event) {
-                _vm.BackToGameModes()
-              }
+          on: {
+            "after-leave": function($event) {
+              _vm.versusChosen = true
             }
-          },
-          [_c("i", { staticClass: "fas fa-angle-left" }), _vm._v(" Back")]
-        )
-      ]
-    ),
-    _vm._v(" "),
-    _vm.createGameActive
-      ? _c("div", { staticClass: "modal", staticStyle: { display: "block" } }, [
+          }
+        },
+        [
           _c(
             "div",
             {
-              staticClass: "modal-dialog",
-              staticStyle: { border: "1px solid white" },
-              attrs: { role: "document" }
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.showGameModes,
+                  expression: "showGameModes"
+                }
+              ],
+              staticClass: "row",
+              staticStyle: { "margin-top": "25vh" }
             },
             [
-              _c("div", { staticClass: "modal-content" }, [
-                _vm._m(2),
+              _c("div", { staticClass: "col-5 game-mode-panel" }, [
+                _c("i", { staticClass: "fas fa-user fa-5x" }),
                 _vm._v(" "),
-                _c(
-                  "div",
-                  {
-                    staticClass: "modal-body text-left",
-                    staticStyle: { "background-color": "black" }
-                  },
-                  [
-                    _c("label", [_vm._v("Wager")]),
-                    _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.gameWager,
-                          expression: "gameWager"
-                        }
-                      ],
-                      attrs: { type: "number" },
-                      domProps: { value: _vm.gameWager },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.gameWager = $event.target.value
-                        }
-                      }
-                    })
-                  ]
-                ),
+                _c("h2", [_vm._v("Practice")]),
                 _vm._v(" "),
-                _c(
-                  "div",
-                  {
-                    staticClass: "modal-footer p-2",
-                    staticStyle: { "background-color": "black" }
-                  },
-                  [
-                    _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-primary",
-                        attrs: { type: "button" },
-                        on: {
-                          click: function($event) {
-                            _vm.CancelCreateGame()
-                          }
-                        }
-                      },
-                      [_vm._v(" Cancel ")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-primary",
-                        attrs: { type: "button" },
-                        on: {
-                          click: function($event) {
-                            _vm.CreateNewGame()
-                          }
-                        }
-                      },
-                      [_vm._v(" Accept ")]
-                    )
-                  ]
-                )
-              ])
+                _c("p", [_vm._v("Play a practice game against the computer")])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-2" }),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "col-5 game-mode-panel interactive",
+                  on: {
+                    click: function($event) {
+                      _vm.showGameModes = false
+                    }
+                  }
+                },
+                [
+                  _c("i", { staticClass: "fas fa-users fa-5x" }),
+                  _vm._v(" "),
+                  _c("h3", [_vm._v("versus")]),
+                  _vm._v(" "),
+                  _c("p", [_vm._v("Go head-to-head with other players")])
+                ]
+              )
             ]
           )
-        ])
-      : _vm._e()
-  ])
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "transition",
+        {
+          attrs: {
+            appear: "",
+            "enter-active-class": "animated bounceInRight",
+            "leave-active-class": "animated bounceOutLeft"
+          },
+          on: {
+            "after-leave": function($event) {
+              _vm.versusChosen = false
+            }
+          }
+        },
+        [
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.versusChosen,
+                  expression: "versusChosen"
+                }
+              ],
+              staticClass: "row",
+              staticStyle: { "margin-top": "25vh" }
+            },
+            [
+              _c("div", { staticClass: "col-5 game-mode-panel" }, [
+                _c("i", { staticClass: "fas fa-plus-square fa-5x" }),
+                _vm._v(" "),
+                _c(
+                  "h2",
+                  {
+                    on: {
+                      click: function($event) {
+                        _vm.OpenCreateGame()
+                      }
+                    }
+                  },
+                  [_vm._v("Create Game")]
+                ),
+                _vm._v(" "),
+                _c("p", [_vm._v("Create a new public game")])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-2" }),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-5 game-mode-panel" }, [
+                _c("i", { staticClass: "fas fa-sign-in-alt fa-5x" }),
+                _vm._v(" "),
+                _c("a", { attrs: { href: "/games" } }, [
+                  _c("h3", [_vm._v("Join Game")])
+                ]),
+                _vm._v(" "),
+                _c("p", [_vm._v("Join another players public game")])
+              ]),
+              _vm._v(" "),
+              _c(
+                "p",
+                {
+                  staticStyle: { cursor: "pointer" },
+                  on: {
+                    click: function($event) {
+                      _vm.showGameModes = true
+                    }
+                  }
+                },
+                [_c("i", { staticClass: "fas fa-angle-left" }), _vm._v(" Back")]
+              )
+            ]
+          )
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "transition",
+        {
+          attrs: {
+            appear: "",
+            "enter-active-class": "animated bounceInRight",
+            "leave-active-class": "animated bounceOutLeft"
+          }
+        },
+        [
+          _vm.createGameActive
+            ? _c(
+                "div",
+                {
+                  staticClass: "modal game-model-panel",
+                  staticStyle: { display: "block", "margin-top": "4%" }
+                },
+                [
+                  _c(
+                    "div",
+                    {
+                      staticClass: "modal-dialog",
+                      staticStyle: { border: "1px solid white" },
+                      attrs: { role: "document" }
+                    },
+                    [
+                      _c("div", { staticClass: "modal-content" }, [
+                        _c(
+                          "div",
+                          {
+                            staticClass: "modal-header",
+                            staticStyle: { "background-color": "black" }
+                          },
+                          [
+                            _c("h4", { staticClass: "modal-title" }, [
+                              _vm._v("Create New Game")
+                            ])
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "modal-body text-left" }, [
+                          _c("label", [_vm._v("Wager")]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.gameWager,
+                                expression: "gameWager"
+                              }
+                            ],
+                            attrs: { type: "number" },
+                            domProps: { value: _vm.gameWager },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.gameWager = $event.target.value
+                              }
+                            }
+                          })
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          {
+                            staticClass: "modal-footer p-2",
+                            staticStyle: { "background-color": "black" }
+                          },
+                          [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-primary",
+                                attrs: { type: "button" },
+                                on: {
+                                  click: function($event) {
+                                    _vm.CancelCreateGame()
+                                  }
+                                }
+                              },
+                              [_vm._v(" Cancel ")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-primary",
+                                attrs: { type: "button" },
+                                on: {
+                                  click: function($event) {
+                                    _vm.CreateNewGame()
+                                  }
+                                }
+                              },
+                              [_vm._v(" Accept ")]
+                            )
+                          ]
+                        )
+                      ])
+                    ]
+                  )
+                ]
+              )
+            : _vm._e()
+        ]
+      )
+    ],
+    1
+  )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-5 game-mode-panel" }, [
-      _c("i", { staticClass: "fas fa-user fa-5x" }),
-      _vm._v(" "),
-      _c("h2", [_vm._v("Practice")]),
-      _vm._v(" "),
-      _c("p", [_vm._v("Play a practice game against the computer")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-5 game-mode-panel" }, [
-      _c("i", { staticClass: "fas fa-sign-in-alt fa-5x" }),
-      _vm._v(" "),
-      _c("a", { attrs: { href: "/games" } }, [_c("h3", [_vm._v("Join Game")])]),
-      _vm._v(" "),
-      _c("p", [_vm._v("Join another players public game")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      {
-        staticClass: "modal-header",
-        staticStyle: { "background-color": "black" }
-      },
-      [_c("h4", { staticClass: "modal-title" }, [_vm._v("Create New Game")])]
-    )
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -57561,6 +57607,7 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
 //
 //
 //
@@ -57854,10 +57901,11 @@ var render = function() {
               _c("div", { staticClass: "flex flex-center" }, [
                 _c("img", {
                   staticClass: "img-fluid",
-                  staticStyle: { width: "15%" },
+                  staticStyle: { width: "10%" },
                   attrs: { src: "/images/credit.png" }
                 }),
-                _vm._v("500\n      ")
+                _vm._v(" "),
+                _c("h2", [_vm._v("500")])
               ]),
               _vm._v(" "),
               _c(
@@ -58012,6 +58060,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         this.Wins = localStorage.Wins;
         this.GamesPlayed = localStorage.GamesPlayed;
         this.ShowProfile = true;
+        console.log("hello");
 
         axios.get('/user/data/' + localStorage.UserID).then(function (response) {
           console.log('User Data:');
@@ -58259,6 +58308,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -58267,10 +58319,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       gameData: {},
       myPlayerIndex: 0,
       gameID: window.location.href.split('/').pop(),
+
       players: {
-        1: { id: '', username: '', side_deck: [], num_cards_in_field: 0, cards_in_field: [] },
-        2: { id: '', username: '', side_deck: [], num_cards_in_field: 0, cards_in_field: [] }
+        1: { id: '', username: '', side_deck: [], num_cards_in_field: 0, cards_in_field: [], set_score: 0, sets_won: 0 },
+        2: { id: '', username: '', side_deck: [], num_cards_in_field: 0, cards_in_field: [], set_score: 0, sets_won: 0 }
       },
+
+      currentSet: 1,
+      setsToWinGame: 3,
       totalCardsDrawn: 0,
       currentPlayerTurn: 1,
       nextDealerCard: 0,
@@ -58290,13 +58346,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     };
   },
-  mounted: function mounted() {
-    //this.GetPlayerSideDeck();
-    //this.DealCardToPlayer(1);
-    //console.log(this.players[1].username)
-  },
+  mounted: function mounted() {},
   created: function created() {
     var _this = this;
+
+    window.addEventListener("beforeunload", function (e) {
+      console.log("Refreshing or leaving the page will cause you to forfeit this game.");
+    }, false);
 
     // Get Game Data
     axios.get('/game/data/' + this.gameID).then(function (response) {
@@ -58323,20 +58379,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     });
 
     window.Echo.private('player.endturn.game.' + this.gameID).listen('PlayerEndTurn', function (e) {
-      console.log(e);
+      //When the current player ends their turn, make the other players turn begin, and draw them a random card
       _this.DealCardToPlayer(e.data.player_index, e.random_dealer_card);
     });
 
     window.Echo.private('player.forfeit.game.' + this.gameID).listen('PlayerForfeit', function (e) {
       console.log(e);
+      //
     });
 
     window.Echo.private('player.playcard.game.' + this.gameID).listen('PlayerPlayCard', function (e) {
-      console.log(e);
+      _this.PlaySideCard(e.data.card, e.data.index, e.data.playerNumber);
     });
 
-    window.Echo.private('player.playcard.game.' + this.gameID).listen('PlayerStand', function (e) {
+    window.Echo.private('player.stand.game.' + this.gameID).listen('PlayerStand', function (e) {
       console.log(e);
+      //
     });
 
     /*window.Echo.private('player.leftgame.game.' + this.gameID).listen('PlayerLeftGame', e => {
@@ -58375,22 +58433,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       });
     },
     AddPlayer: function AddPlayer(PlayerNumber, Data) {
-      console.log(Data);
       this.players[PlayerNumber].username = Data.data.username;
       this.players[PlayerNumber].id = Data.data.id;
       this.players[PlayerNumber].side_deck = [];
       var sideDeckCards = JSON.parse(Data.data.side_deck);
       for (var i = 0; i < 4; i++) {
-        this.players[PlayerNumber].side_deck.push(sideDeckCards[Math.floor(Math.random() * 10 + 0)]);
+        var randomCard = Math.floor(Math.random() * 10 + 0);
+        this.players[PlayerNumber].side_deck.push(sideDeckCards[randomCard]);
+        //sideDeckCards.splice(randomCard, 1)
       }
-
       if (this.players[PlayerNumber].id == localStorage.UserID) {
         this.myPlayerIndex = PlayerNumber;
       }
     },
     DealCardToPlayer: function DealCardToPlayer(playerNumber, dealerCard) {
       this.PlaySound('DrawCard');
-
       this.nextDealerCard = dealerCard;
       this.players[playerNumber].num_cards_in_field += 1;
       this.players[playerNumber].cards_in_field.push(this.nextDealerCard);
@@ -58401,7 +58458,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }
       this.totalCardsDrawn += 1;
       this.UpdatePlayerScore(playerNumber);
-
       if (playerNumber == 1) {
         this.currentPlayerTurn = 2;
       } else {
@@ -58410,8 +58466,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     PlaySideCard: function PlaySideCard(card, index, playerNumber) {
       this.players[playerNumber].num_cards_in_field += 1;
-      window.$('#p' + playerNumber + 'c' + this.players[playerNumber].num_cards_in_field).append('<img class="card-image" src="' + this.players[playerNumber].side_deck[index].CardImage + '">');
-      this.players[1].side_deck.splice(index, 1);
+
+      if (this.players[playerNumber].side_deck[index] == undefined) {
+        window.$('#p' + playerNumber + 'c' + this.players[playerNumber].num_cards_in_field).append('<img class="card-image" src="' + card.CardImage + '">');
+      } else {
+        window.$('#p' + playerNumber + 'c' + this.players[playerNumber].num_cards_in_field).append('<img class="card-image" src="' + this.players[playerNumber].side_deck[index].CardImage + '">');
+        axios.post('/game/' + this.gameID + '/playcard', {
+          username: localStorage.Username,
+          user_id: localStorage.UserID,
+          game_id: this.gameID,
+          playerNumber: playerNumber,
+          card: card
+        }).then(function (response) {
+          console.log(response);
+        });
+      }
+
+      this.players[playerNumber].side_deck.splice(index, 1);
     },
     UpdatePlayerScore: function UpdatePlayerScore() {
       this.players[this.currentPlayerTurn].set_score = this.players[this.currentPlayerTurn].cards_in_field.reduce(function (a, b) {
@@ -58440,15 +58511,17 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container-fluid text-center" }, [
     _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-6" }, [
+      _c("div", { staticClass: "col-5" }, [
         _c("div", { staticClass: "container" }, [
           _c("h2", [_vm._v(_vm._s(_vm.players[1].username))]),
           _vm._v(" "),
-          _c("i", { staticClass: "fas fa-award fa-2x turn-inactive" }),
+          _c("p", [_vm._v("Set Score - " + _vm._s(_vm.players[1].set_score))]),
           _vm._v(" "),
-          _c("i", { staticClass: "fas fa-award fa-2x turn-inactive" }),
+          _c("i", { staticClass: "fas fa-award fa-2x set-not-won" }),
           _vm._v(" "),
-          _c("i", { staticClass: "fas fa-award fa-2x turn-inactive" }),
+          _c("i", { staticClass: "fas fa-award fa-2x set-not-won" }),
+          _vm._v(" "),
+          _c("i", { staticClass: "fas fa-award fa-2x set-not-won" }),
           _vm._v(" "),
           _vm._m(0),
           _vm._v(" "),
@@ -58479,7 +58552,7 @@ var render = function() {
                     { staticClass: "card-row" },
                     _vm._l(this.players[1].side_deck, function(card, index) {
                       return _c("div", {
-                        staticClass: "card",
+                        staticClass: "card interactive",
                         style: {
                           backgroundImage: "url(" + card.CardImage + ")"
                         },
@@ -58553,15 +58626,23 @@ var render = function() {
         ])
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "col-6" }, [
+      _c("div", { staticClass: "col-2" }, [
+        _c("h2", [_vm._v("Current Set")]),
+        _vm._v(" "),
+        _c("h3", [_vm._v(_vm._s(_vm.currentSet))])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-5" }, [
         _c("div", { staticClass: "container" }, [
           _c("h2", [_vm._v(_vm._s(_vm.players[2].username))]),
           _vm._v(" "),
-          _c("i", { staticClass: "fas fa-award fa-2x turn-inactive" }),
+          _c("p", [_vm._v("Set Score - " + _vm._s(_vm.players[2].set_score))]),
           _vm._v(" "),
-          _c("i", { staticClass: "fas fa-award fa-2x turn-inactive" }),
+          _c("i", { staticClass: "fas fa-award fa-2x set-not-won" }),
           _vm._v(" "),
-          _c("i", { staticClass: "fas fa-award fa-2x turn-inactive" }),
+          _c("i", { staticClass: "fas fa-award fa-2x set-not-won" }),
+          _vm._v(" "),
+          _c("i", { staticClass: "fas fa-award fa-2x set-not-won" }),
           _vm._v(" "),
           _vm._m(3),
           _vm._v(" "),
@@ -58592,13 +58673,13 @@ var render = function() {
                     { staticClass: "card-row" },
                     _vm._l(this.players[2].side_deck, function(card, index) {
                       return _c("div", {
-                        staticClass: "card",
+                        staticClass: "card interactive",
                         style: {
                           backgroundImage: "url(" + card.CardImage + ")"
                         },
                         on: {
                           click: function($event) {
-                            _vm.PlaySideCard(card, index, 1)
+                            _vm.PlaySideCard(card, index, 2)
                           }
                         }
                       })
@@ -58835,6 +58916,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   created: function created() {
@@ -58844,19 +58944,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     return {
       deckBuilderError: '',
       selectedCards: [],
-      sideDeckCards: {
+      responseMessage: '',
+
+      sideDeckCardsPlus: {
         '+1': { img: '/images/p1.png' },
         '+2': { img: '/images/p2.png' },
         '+3': { img: '/images/p3.png' },
         '+4': { img: '/images/p4.png' },
         '+5': { img: '/images/p5.png' },
-        '+6': { img: '/images/p6.png' },
-        'flip1': { img: '/images/f1.png' },
-        'flip2': { img: '/images/f2.png' },
-        'flip3': { img: '/images/f3.png' },
-        'flip4': { img: '/images/f4.png' },
-        'flip5': { img: '/images/f5.png' },
-        'flip6': { img: '/images/f6.png' },
+        '+6': { img: '/images/p6.png' }
+      },
+
+      sideDeckCardsFlip: {
+        'f1': { img: '/images/f1.png' },
+        'f2': { img: '/images/f2.png' },
+        'f3': { img: '/images/f3.png' },
+        'f4': { img: '/images/f4.png' },
+        'f5': { img: '/images/f5.png' },
+        'f6': { img: '/images/f6.png' }
+      },
+
+      sideDeckCardsMinus: {
         '-1': { img: '/images/n1.png' },
         '-2': { img: '/images/n2.png' },
         '-3': { img: '/images/n3.png' },
@@ -58864,6 +58972,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         '-5': { img: '/images/n5.png' },
         '-6': { img: '/images/n6.png' }
       }
+
     };
   },
 
@@ -58873,7 +58982,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       if (this.selectedCards.length < 10) {
         this.selectedCards.push({ CardImage: value.img, CardID: key });
       } else {
-        this.deckBuilderError = 'you can not select more than 10 cards!';
+        this.responseMessage = 'you can not select more than 10 cards!';
       }
     },
     RemoveCardFromSideDeck: function RemoveCardFromSideDeck(value, key) {
@@ -58883,9 +58992,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       var _this = this;
 
       axios.get('/user/get_sidedeck/' + localStorage.UserID).then(function (response) {
-
-        console.log(response);
-
         if (typeof response.data == 'string') {
           _this.selectedCards = [];
         } else {
@@ -58894,16 +59000,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       });
     },
     SaveDeck: function SaveDeck() {
+      var _this2 = this;
+
       if (this.selectedCards.length < 10) {
-        this.deckBuilderError = 'you must select at least 10 cards for your side deck!';
+        this.responseMessage = 'you must select at least 10 cards for your side deck!';
       } else {
         axios.post('/user/update_sidedeck', {
           user_id: localStorage.UserID,
           chosen_side_deck: JSON.stringify(this.selectedCards)
         }).then(function (response) {
-          console.log(response);
+          _this2.responseMessage = "Deck Saved";
         }).catch(function (error) {
-          console.log(error);
+          this.responseMessage = "Failed to Save Deck";
         });
       }
     },
@@ -58921,52 +59029,99 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container-fluid" }, [
+  return _c("div", { staticClass: "container-fluid p-4" }, [
+    _vm._m(0),
+    _vm._v(" "),
     _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-6 offset-2 text-center" }, [
+      _c("div", { staticClass: "col-12" }, [
         _c("h3", [_vm._v("All Cards")]),
         _vm._v(" "),
         _c(
           "div",
           { staticClass: "row" },
-          _vm._l(_vm.sideDeckCards, function(value, key) {
-            return _c("div", { staticClass: "col-2" }, [
-              _c("img", {
-                key: key,
-                staticClass: "mx-auto",
-                staticStyle: { cursor: "pointer" },
-                attrs: { src: value.img },
-                on: {
-                  click: function($event) {
-                    _vm.AddCardToSideDeck(value, key)
+          _vm._l(_vm.sideDeckCardsPlus, function(value, key) {
+            return _c("div", [
+              _c("div", { staticClass: "card m-3" }, [
+                _c("img", {
+                  key: key,
+                  staticClass: "mx-auto card-image",
+                  staticStyle: { cursor: "pointer" },
+                  attrs: { src: value.img },
+                  on: {
+                    click: function($event) {
+                      _vm.AddCardToSideDeck(value, key)
+                    }
                   }
-                }
-              })
+                })
+              ])
+            ])
+          })
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "row" },
+          _vm._l(_vm.sideDeckCardsMinus, function(value, key) {
+            return _c("div", [
+              _c("div", { staticClass: "card m-3" }, [
+                _c("img", {
+                  key: key,
+                  staticClass: "mx-auto card-image",
+                  staticStyle: { cursor: "pointer" },
+                  attrs: { src: value.img },
+                  on: {
+                    click: function($event) {
+                      _vm.AddCardToSideDeck(value, key)
+                    }
+                  }
+                })
+              ])
             ])
           })
         )
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-2 text-center" }, [
+      ])
+    ]),
+    _vm._v(" "),
+    _c("hr"),
+    _vm._v(" "),
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-12" }, [
         _c("h3", [_vm._v("Selected Cards")]),
         _vm._v(" "),
         _c(
           "div",
           { staticClass: "row" },
           _vm._l(_vm.selectedCards, function(value, key) {
-            return _c("div", { staticClass: "col-6" }, [
-              _c("img", {
-                key: key,
-                staticClass: "mx-auto",
-                staticStyle: { cursor: "pointer" },
-                attrs: { src: value.CardImage },
-                on: {
-                  click: function($event) {
-                    _vm.RemoveCardFromSideDeck(value, key)
-                  }
-                }
-              })
-            ])
+            return _c(
+              "div",
+              [
+                _c(
+                  "transition",
+                  {
+                    attrs: {
+                      appear: "",
+                      "enter-active-class": "animated bounceInRight"
+                    }
+                  },
+                  [
+                    _c("div", { staticClass: "card m-3" }, [
+                      _c("img", {
+                        key: key,
+                        staticClass: "mx-auto card-image",
+                        staticStyle: { cursor: "pointer" },
+                        attrs: { src: value.CardImage },
+                        on: {
+                          click: function($event) {
+                            _vm.RemoveCardFromSideDeck(value, key)
+                          }
+                        }
+                      })
+                    ])
+                  ]
+                )
+              ],
+              1
+            )
           })
         )
       ])
@@ -58996,10 +59151,25 @@ var render = function() {
         }
       },
       [_vm._v("Clear Deck")]
-    )
+    ),
+    _vm._v(" "),
+    _vm.responseMessage
+      ? _c("h1", [_vm._v(_vm._s(_vm.responseMessage))])
+      : _vm._e()
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("p", { staticStyle: { cursor: "pointer" } }, [
+      _c("i", { staticClass: "fas fa-angle-left" }),
+      _vm._v(" "),
+      _c("a", { attrs: { href: "/" } }, [_vm._v("Back")])
+    ])
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -59070,6 +59240,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     created: function created() {
@@ -59108,6 +59279,8 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
+    _c("h1", [_vm._v("open Games")]),
+    _vm._v(" "),
     _c(
       "div",
       { staticClass: "row" },
@@ -59236,7 +59409,11 @@ var render = function() {
       "div",
       {
         staticClass: "row",
-        staticStyle: { border: "1px solid white", padding: "6px" }
+        staticStyle: {
+          border: "1px solid white",
+          padding: "6px",
+          "background-color": "black"
+        }
       },
       [
         _c("div", { staticClass: "col-10" }, [

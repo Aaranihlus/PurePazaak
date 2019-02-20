@@ -12,7 +12,7 @@
 </head>
 <body>
 
-  <div class="container-fluid p-0" id="app">
+  <div class="container-fluid p-0" style="overflow: hidden;" id="app">
     <profile></profile>
     @yield('content')
   </div>

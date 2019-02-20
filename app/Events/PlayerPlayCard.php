@@ -26,6 +26,7 @@ class PlayerPlayCard implements ShouldBroadcast
     {
         $this->game_id = $game_id;
         $this->data = $data;
+        $this->dontBroadcastToCurrentUser();
     }
 
     /**

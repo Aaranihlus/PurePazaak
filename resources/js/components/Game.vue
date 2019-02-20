@@ -2,12 +2,13 @@
   <div class="container-fluid text-center">
     <div class="row">
 
-      <div class="col-6">
+      <div class="col-5">
         <div class="container">
           <h2>{{ players[1].username }}</h2>
-          <i class="fas fa-award fa-2x turn-inactive"></i>
-          <i class="fas fa-award fa-2x turn-inactive"></i>
-          <i class="fas fa-award fa-2x turn-inactive"></i>
+          <p>Set Score - {{ players[1].set_score }}</p>
+          <i class="fas fa-award fa-2x set-not-won"></i>
+          <i class="fas fa-award fa-2x set-not-won"></i>
+          <i class="fas fa-award fa-2x set-not-won"></i>
           <div class="card-row">
             <div class="card" id="p1c1"></div>
             <div class="card" id="p1c2"></div>
@@ -24,11 +25,10 @@
             <div class="card" id="p1c9"></div>
           </div>
           <br>
-
           <div v-show="this.myPlayerIndex == 1">
             <p>Side Deck</p>
             <div class="card-row" v-if="players[1].side_deck">
-              <div class="card" v-for="(card, index) in this.players[1].side_deck" v-bind:style="{ backgroundImage: 'url(' + card.CardImage + ')' }" v-on:click="PlaySideCard(card, index, 1)"></div>
+              <div class="card interactive" v-for="(card, index) in this.players[1].side_deck" v-bind:style="{ backgroundImage: 'url(' + card.CardImage + ')' }" v-on:click="PlaySideCard(card, index, 1)"></div>
             </div>
             <br>
             <div v-show="this.currentPlayerTurn == this.myPlayerIndex">
@@ -37,16 +37,22 @@
               <button class="btn btn-primary" v-on:click="Forfeit()">Forfeit</button>
             </div>
           </div>
-
         </div>
       </div>
 
-      <div class="col-6">
+      <div class="col-2">
+        <h2>Current Set</h2>
+        <h3>{{ currentSet }}</h3>
+      </div>
+
+
+      <div class="col-5">
         <div class="container">
           <h2>{{ players[2].username }}</h2>
-          <i class="fas fa-award fa-2x turn-inactive"></i>
-          <i class="fas fa-award fa-2x turn-inactive"></i>
-          <i class="fas fa-award fa-2x turn-inactive"></i>
+          <p>Set Score - {{ players[2].set_score }}</p>
+          <i class="fas fa-award fa-2x set-not-won"></i>
+          <i class="fas fa-award fa-2x set-not-won"></i>
+          <i class="fas fa-award fa-2x set-not-won"></i>
           <div class="card-row">
             <div class="card" id="p2c1"></div>
             <div class="card" id="p2c2"></div>
@@ -63,21 +69,18 @@
             <div class="card" id="p2c9"></div>
           </div>
           <br>
-
           <div v-show="this.myPlayerIndex == 2">
-          <p>Side Deck</p>
-          <div class="card-row" v-if="players[2].side_deck">
-            <div class="card" v-for="(card, index) in this.players[2].side_deck" v-bind:style="{ backgroundImage: 'url(' + card.CardImage + ')' }" v-on:click="PlaySideCard(card, index, 1)"></div>
+            <p>Side Deck</p>
+            <div class="card-row" v-if="players[2].side_deck">
+              <div class="card interactive" v-for="(card, index) in this.players[2].side_deck" v-bind:style="{ backgroundImage: 'url(' + card.CardImage + ')' }" v-on:click="PlaySideCard(card, index, 2)"></div>
+            </div>
+            <br>
+            <div v-show="this.currentPlayerTurn == this.myPlayerIndex">
+              <button class="btn btn-primary" v-on:click="EndTurn()">End Turn</button>
+              <button class="btn btn-primary" v-on:click="Stand()">Stand</button>
+              <button class="btn btn-primary" v-on:click="Forfeit()">Forfeit</button>
+            </div>
           </div>
-          <br>
-          <div v-show="this.currentPlayerTurn == this.myPlayerIndex">
-            <button class="btn btn-primary" v-on:click="EndTurn()">End Turn</button>
-            <button class="btn btn-primary" v-on:click="Stand()">Stand</button>
-            <button class="btn btn-primary" v-on:click="Forfeit()">Forfeit</button>
-          </div>
-          </div>
-
-
         </div>
       </div>
 
@@ -94,10 +97,14 @@ export default {
       gameData: {},
       myPlayerIndex: 0,
       gameID: window.location.href.split('/').pop(),
+
       players: {
-        1: { id: '', username: '', side_deck: [], num_cards_in_field: 0, cards_in_field: [] },
-        2: { id: '', username: '', side_deck: [], num_cards_in_field: 0, cards_in_field: [] },
+        1: { id: '', username: '', side_deck: [], num_cards_in_field: 0, cards_in_field: [], set_score: 0, sets_won: 0 },
+        2: { id: '', username: '', side_deck: [], num_cards_in_field: 0, cards_in_field: [], set_score: 0, sets_won: 0 },
       },
+
+      currentSet: 1,
+      setsToWinGame: 3,
       totalCardsDrawn: 0,
       currentPlayerTurn: 1,
       nextDealerCard: 0,
@@ -119,12 +126,15 @@ export default {
   },
 
   mounted () {
-    //this.GetPlayerSideDeck();
-    //this.DealCardToPlayer(1);
-    //console.log(this.players[1].username)
+
   },
 
   created () {
+
+    window.addEventListener("beforeunload", function(e){
+      console.log("Refreshing or leaving the page will cause you to forfeit this game.")
+    }, false);
+
     // Get Game Data
     axios.get('/game/data/' + this.gameID).then(response => {
       this.gameData = response.data
@@ -149,21 +159,24 @@ export default {
       })
     });
 
+
     window.Echo.private('player.endturn.game.' + this.gameID).listen('PlayerEndTurn', e => {
-      console.log(e);
+      //When the current player ends their turn, make the other players turn begin, and draw them a random card
       this.DealCardToPlayer(e.data.player_index, e.random_dealer_card);
     });
 
     window.Echo.private('player.forfeit.game.' + this.gameID).listen('PlayerForfeit', e => {
       console.log(e);
+      //
     });
 
     window.Echo.private('player.playcard.game.' + this.gameID).listen('PlayerPlayCard', e => {
-      console.log(e);
+      this.PlaySideCard(e.data.card, e.data.index, e.data.playerNumber)
     });
 
-    window.Echo.private('player.playcard.game.' + this.gameID).listen('PlayerStand', e => {
+    window.Echo.private('player.stand.game.' + this.gameID).listen('PlayerStand', e => {
       console.log(e);
+      //
     });
 
     /*window.Echo.private('player.leftgame.game.' + this.gameID).listen('PlayerLeftGame', e => {
@@ -208,26 +221,25 @@ export default {
       });
     },
 
+
     AddPlayer (PlayerNumber, Data) {
-      console.log(Data);
       this.players[PlayerNumber].username = Data.data.username;
       this.players[PlayerNumber].id = Data.data.id;
       this.players[PlayerNumber].side_deck = [];
       let sideDeckCards = JSON.parse(Data.data.side_deck)
       for (let i = 0; i < 4; i++) {
-        this.players[PlayerNumber].side_deck.push(sideDeckCards[Math.floor((Math.random() * 10) + 0)]);
+        let randomCard = Math.floor((Math.random() * 10) + 0);
+        this.players[PlayerNumber].side_deck.push(sideDeckCards[randomCard]);
+        //sideDeckCards.splice(randomCard, 1)
       }
-
       if (this.players[PlayerNumber].id == localStorage.UserID) {
         this.myPlayerIndex = PlayerNumber
       }
-
     },
 
 
     DealCardToPlayer(playerNumber, dealerCard) {
       this.PlaySound('DrawCard')
-
       this.nextDealerCard = dealerCard
       this.players[playerNumber].num_cards_in_field += 1
       this.players[playerNumber].cards_in_field.push(this.nextDealerCard)
@@ -238,20 +250,35 @@ export default {
       }
       this.totalCardsDrawn += 1;
       this.UpdatePlayerScore(playerNumber);
-
       if (playerNumber == 1) {
         this.currentPlayerTurn = 2
       } else {
         this.currentPlayerTurn = 1
       }
-
     },
 
 
     PlaySideCard(card, index, playerNumber) {
       this.players[playerNumber].num_cards_in_field += 1
-      window.$('#p' + playerNumber + 'c' + this.players[playerNumber].num_cards_in_field).append('<img class="card-image" src="' + this.players[playerNumber].side_deck[index].CardImage + '">')
-      this.players[1].side_deck.splice(index, 1)
+
+      if( this.players[playerNumber].side_deck[index] == undefined ) {
+        window.$('#p' + playerNumber + 'c' + this.players[playerNumber].num_cards_in_field).append('<img class="card-image" src="' + card.CardImage + '">')
+      } else {
+        window.$('#p' + playerNumber + 'c' + this.players[playerNumber].num_cards_in_field).append('<img class="card-image" src="' + this.players[playerNumber].side_deck[index].CardImage + '">')
+        axios.post('/game/'+ this.gameID +'/playcard', {
+          username: localStorage.Username,
+          user_id: localStorage.UserID,
+          game_id: this.gameID,
+          playerNumber: playerNumber,
+          card: card
+        })
+        .then((response) => {
+          console.log(response)
+        });
+      }
+
+      this.players[playerNumber].side_deck.splice(index, 1)
+
     },
 
     UpdatePlayerScore() {

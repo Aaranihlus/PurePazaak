@@ -10517,17 +10517,21 @@ body {
 }
 
 .card {
-  min-height: 16vh;
-  max-height: 16vh;
+  min-height: 15vh;
+  max-height: 15vh;
   background-color: black;
   border: 2px solid white;
   border-radius: 16px;
-  max-width: 6vw;
-  min-width: 6vw;
+  max-width: 5.5vw;
+  min-width: 5.5vw;
   margin: 1%;
   background-attachment: center;
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+.set-not-won {
+  color: grey;
 }
 
 .card-image {
@@ -10536,11 +10540,13 @@ body {
 }
 
 .turn-inactive {
-  color: grey;
+  border: 1px solid white;
+  border-radius: 8px;
 }
 
 .turn-active {
-  color: red;
+  border: 1px solid #636b6f;
+  border-radius: 8px;
 }
 
 .card-row {

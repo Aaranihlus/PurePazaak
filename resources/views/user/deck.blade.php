@@ -2,6 +2,6 @@
 
 @section('content')
 
-<deck-builder></deck-builder>
+  <deck-builder></deck-builder>
 
 @endsection('content')

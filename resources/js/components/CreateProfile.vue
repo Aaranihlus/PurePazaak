@@ -31,7 +31,8 @@
         <h1>Congratulations!</h1>
         <p>Hello {{ this.Username }}, here are some credits to get you started</p>
         <div class="flex flex-center">
-          <img src="/images/credit.png" style="width:15%" class="img-fluid">500
+          <img src="/images/credit.png" style="width:10%" class="img-fluid">
+          <h2>500</h2>
         </div>
         <button v-on:click="profileCreatedSuccessfully = false" class="btn btn-primary">Play</button>
       </div>

@@ -70,6 +70,7 @@ export default {
         this.Wins = localStorage.Wins
         this.GamesPlayed = localStorage.GamesPlayed
         this.ShowProfile = true
+        console.log("hello")
 
         axios.get('/user/data/' + localStorage.UserID).then((response) => {
           console.log('User Data:')

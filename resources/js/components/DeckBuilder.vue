@@ -1,36 +1,56 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid p-4">
+
+    <p style="cursor: pointer;"><i class="fas fa-angle-left"></i> <a href="/">Back</a></p>
 
     <div class="row">
-
-      <div class="col-6 offset-2 text-center">
+      <div class="col-12">
         <h3>All Cards</h3>
         <div class="row">
-          <div class="col-2" v-for="(value, key) in sideDeckCards">
-            <img class="mx-auto" style="cursor: pointer" :key="key" :src="value.img" v-on:click="AddCardToSideDeck(value, key)">
+          <div v-for="(value, key) in sideDeckCardsPlus">
+            <div class="card m-3">
+              <img class="mx-auto card-image" style="cursor: pointer" :key="key" :src="value.img" v-on:click="AddCardToSideDeck(value, key)">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div v-for="(value, key) in sideDeckCardsMinus">
+            <div class="card m-3">
+              <img class="mx-auto card-image" style="cursor: pointer" :key="key" :src="value.img" v-on:click="AddCardToSideDeck(value, key)">
+            </div>
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="col-2 text-center">
+    <hr>
+
+    <div class="row">
+      <div class="col-12">
         <h3>Selected Cards</h3>
         <div class="row">
-          <div class="col-6" v-for="(value, key) in selectedCards">
-            <img class="mx-auto" style="cursor: pointer" :key="key" :src="value.CardImage" v-on:click="RemoveCardFromSideDeck(value, key)">
+          <div v-for="(value, key) in selectedCards">
+            <transition appear enter-active-class="animated bounceInRight">
+              <div class="card m-3">
+                <img class="mx-auto card-image" style="cursor: pointer" :key="key" :src="value.CardImage" v-on:click="RemoveCardFromSideDeck(value, key)">
+              </div>
+            </transition>
           </div>
         </div>
       </div>
-
     </div>
 
     <button class="btn btn-primary" v-on:click="SaveDeck()">Save Deck</button>
     <button class="btn btn-primary" v-on:click="ClearDeck()">Clear Deck</button>
+
+    <h1 v-if="responseMessage">{{ responseMessage }}</h1>
 
   </div>
 </template>
 
 <script>
 export default {
+
   created() {
     this.GetSavedDeck();
   },
@@ -39,19 +59,27 @@ export default {
     return {
       deckBuilderError: '',
       selectedCards: [],
-      sideDeckCards: {
+      responseMessage: '',
+
+      sideDeckCardsPlus: {
         '+1': { img: '/images/p1.png' },
         '+2': { img: '/images/p2.png' },
         '+3': { img: '/images/p3.png' },
         '+4': { img: '/images/p4.png' },
         '+5': { img: '/images/p5.png' },
-        '+6': { img: '/images/p6.png' },
-        'flip1': { img: '/images/f1.png' },
-        'flip2': { img: '/images/f2.png' },
-        'flip3': { img: '/images/f3.png' },
-        'flip4': { img: '/images/f4.png' },
-        'flip5': { img: '/images/f5.png' },
-        'flip6': { img: '/images/f6.png' },
+        '+6': { img: '/images/p6.png' }
+      },
+
+      sideDeckCardsFlip: {
+        'f1': { img: '/images/f1.png' },
+        'f2': { img: '/images/f2.png' },
+        'f3': { img: '/images/f3.png' },
+        'f4': { img: '/images/f4.png' },
+        'f5': { img: '/images/f5.png' },
+        'f6': { img: '/images/f6.png' }
+      },
+
+      sideDeckCardsMinus: {
         '-1': { img: '/images/n1.png' },
         '-2': { img: '/images/n2.png' },
         '-3': { img: '/images/n3.png' },
@@ -59,6 +87,7 @@ export default {
         '-5': { img: '/images/n5.png' },
         '-6': { img: '/images/n6.png' }
       }
+
     }
   },
 
@@ -68,7 +97,7 @@ export default {
       if ( this.selectedCards.length < 10 ) {
         this.selectedCards.push({ CardImage: value.img, CardID: key })
       } else {
-        this.deckBuilderError = 'you can not select more than 10 cards!'
+        this.responseMessage = 'you can not select more than 10 cards!'
       }
     },
 
@@ -78,39 +107,33 @@ export default {
 
     GetSavedDeck() {
       axios.get('/user/get_sidedeck/' + localStorage.UserID).then(response => {
-
-        console.log(response)
-
         if(typeof response.data == 'string') {
           this.selectedCards = []
         } else {
           this.selectedCards = response.data
         }
-
-
-
-      })
+      });
     },
 
     SaveDeck() {
       if ( this.selectedCards.length < 10 ) {
-        this.deckBuilderError = 'you must select at least 10 cards for your side deck!'
+        this.responseMessage = 'you must select at least 10 cards for your side deck!'
       } else {
         axios.post('/user/update_sidedeck', {
           user_id: localStorage.UserID,
           chosen_side_deck: JSON.stringify(this.selectedCards)
         })
         .then((response) => {
-          console.log(response)
+          this.responseMessage = "Deck Saved"
         })
         .catch(function(error) {
-            console.log(error);
+          this.responseMessage = "Failed to Save Deck"
         });
       }
     },
 
     ClearDeck() {
-      this.selectedCards = []
+      this.selectedCards = [];
     }
 
   }
