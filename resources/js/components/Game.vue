@@ -55,11 +55,9 @@
           <button class="btn btn-primary mt-5" v-on:click="ReadyUp(myPlayerIndex)">Ready up</button>
           <hr>
           <p v-if="this.players[1].ready">Player one: Ready</p>
-          <!--<p v-else>Player one: Not Ready-->
           <i class="fas fa-thumbs-up fa-3x" v-if="this.players[1].ready"></i>
           <hr>
           <p v-if="this.players[2].ready">Player two: Ready</p>
-          <!--<p v-else>Player two: Not Ready-->
           <i class="fas fa-thumbs-up fa-3x" v-if="this.players[2].ready"></i>
         </div>
 
@@ -171,6 +169,7 @@ export default {
       axios.get('/user/data/' + e.opponent.id).then(response => {
         this.AddPlayer(2, response)
         this.waitingForPlayers = false
+        this.ShowReadyStatus = true
       });
     });
 
@@ -215,10 +214,6 @@ export default {
 
 
 
-  },
-
-  mounted () {
-    this.ShowReadyStatus = true;
   },
 
   methods: {
@@ -305,6 +300,7 @@ export default {
         this.myPlayerIndex = PlayerNumber
         if (this.myPlayerIndex == 2) {
           this.waitingForPlayers = false
+          this.ShowReadyStatus = true
         }
       }
     },

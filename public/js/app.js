@@ -58311,8 +58311,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -58376,6 +58374,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       axios.get('/user/data/' + e.opponent.id).then(function (response) {
         _this.AddPlayer(2, response);
         _this.waitingForPlayers = false;
+        _this.ShowReadyStatus = true;
       });
     });
 
@@ -58416,9 +58415,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     window.Echo.private('player.stand.game.' + this.gameID).listen('PlayerStand', function (e) {
       console.log(e);
     });
-  },
-  mounted: function mounted() {
-    this.ShowReadyStatus = true;
   },
 
 
@@ -58493,6 +58489,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         this.myPlayerIndex = PlayerNumber;
         if (this.myPlayerIndex == 2) {
           this.waitingForPlayers = false;
+          this.ShowReadyStatus = true;
         }
       }
     },
