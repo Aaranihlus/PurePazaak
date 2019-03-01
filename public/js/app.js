@@ -13999,22 +13999,22 @@ module.exports = __webpack_require__(63);
 
 
 /**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
+* First we will load all of this project's JavaScript dependencies which
+* includes Vue and other libraries. It is a great starting point when
+* building robust, powerful web applications using Vue and Laravel.
+*/
 
 __webpack_require__(14);
 
 window.Vue = __webpack_require__(39);
 
 /**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
+* The following block of code may be used to automatically register your
+* Vue components. It will recursively scan this directory for the Vue
+* components and automatically register them with their "basename".
+*
+* Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
+*/
 
 Vue.component('game-mode', __webpack_require__(42));
 Vue.component('create-profile', __webpack_require__(45));
@@ -14031,10 +14031,10 @@ Vue.component('game-listing', __webpack_require__(60));
 // })
 
 /**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
+* Next, we will create a fresh Vue application instance and attach it to
+* the page. Then, you may begin adding components to this application
+* or customize the JavaScript scaffolding to fit your unique needs.
+*/
 
 // Event Handler
 Vue.prototype.$eventHub = new Vue();
@@ -57237,6 +57237,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     this.$eventHub.$on('NoProfileFound', this.ChooseGameMode);
 
+    this.$eventHub.$on('showDeckBuilder', this.HideBoth);
+
+    this.$eventHub.$on('BuilderClosed', this.BackToGameModes);
+
     this.$eventHub.$on('ProfileFound', function () {
       _this.showGameModes = true;
     });
@@ -57256,6 +57260,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         Wager: this.gameWager,
         UserID: localStorage.UserID
       }).then(function (response) {
+        console.log(response);
         if (response.status == 200) {
           location.assign(response.data);
         }
@@ -57275,6 +57280,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     BackToGameModes: function BackToGameModes() {
       this.versusChosen = false;
       this.showGameModes = true;
+    },
+    HideBoth: function HideBoth() {
+      this.versusChosen = false;
+      this.showGameModes = false;
     }
   }
 });
@@ -57299,11 +57308,7 @@ var render = function() {
             "enter-active-class": "animated bounceInRight",
             "leave-active-class": "animated bounceOutLeft"
           },
-          on: {
-            "after-leave": function($event) {
-              _vm.versusChosen = true
-            }
-          }
+          on: { "after-leave": function($event) {} }
         },
         [
           _c(
@@ -57337,7 +57342,7 @@ var render = function() {
                   staticClass: "col-5 game-mode-panel interactive",
                   on: {
                     click: function($event) {
-                      _vm.showGameModes = false
+                      ;(_vm.showGameModes = false), (_vm.versusChosen = true)
                     }
                   }
                 },
@@ -57362,11 +57367,7 @@ var render = function() {
             "enter-active-class": "animated bounceInRight",
             "leave-active-class": "animated bounceOutLeft"
           },
-          on: {
-            "after-leave": function($event) {
-              _vm.versusChosen = false
-            }
-          }
+          on: { "after-leave": function($event) {} }
         },
         [
           _c(
@@ -57384,7 +57385,7 @@ var render = function() {
               staticStyle: { "margin-top": "25vh" }
             },
             [
-              _c("div", { staticClass: "col-5 game-mode-panel" }, [
+              _c("div", { staticClass: "col-5 game-mode-panel interactive" }, [
                 _c("i", { staticClass: "fas fa-plus-square fa-5x" }),
                 _vm._v(" "),
                 _c(
@@ -57404,7 +57405,7 @@ var render = function() {
               _vm._v(" "),
               _c("div", { staticClass: "col-2" }),
               _vm._v(" "),
-              _c("div", { staticClass: "col-5 game-mode-panel" }, [
+              _c("div", { staticClass: "col-5 game-mode-panel interactive" }, [
                 _c("i", { staticClass: "fas fa-sign-in-alt fa-5x" }),
                 _vm._v(" "),
                 _c("a", { attrs: { href: "/games" } }, [
@@ -57420,7 +57421,7 @@ var render = function() {
                   staticStyle: { cursor: "pointer" },
                   on: {
                     click: function($event) {
-                      _vm.showGameModes = true
+                      ;(_vm.versusChosen = false), (_vm.showGameModes = true)
                     }
                   }
                 },
@@ -58011,13 +58012,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -58039,19 +58033,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     //When a new profile is created, get the players data from the database
     this.$eventHub.$on('ProfileCreated', this.GetPlayerProfile());
-
-    /*if (localStorage.ActiveGameID) {
-      axios.post('/game/'+ localStorage.ActiveGameID +'/leaveGame', {
-        user_id: localStorage.UserID
-      })
-      .then((response) => {
-        console.log(response)
-      });
-    }*/
   },
 
 
   methods: {
+    showDeckBuilder: function showDeckBuilder() {
+      this.$eventHub.$emit('showDeckBuilder');
+    },
     GetPlayerProfile: function GetPlayerProfile() {
       if (localStorage.UserID) {
         this.UserID = localStorage.UserID;
@@ -58060,11 +58048,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         this.Wins = localStorage.Wins;
         this.GamesPlayed = localStorage.GamesPlayed;
         this.ShowProfile = true;
-        console.log("hello");
 
         axios.get('/user/data/' + localStorage.UserID).then(function (response) {
-          console.log('User Data:');
-          console.log(response);
+          //console.log('User Data:')
+          //console.log(response)
         });
       }
     }
@@ -58098,7 +58085,19 @@ var render = function() {
         _vm._v("\n    " + _vm._s(this.Username) + "\n  ")
       ]),
       _vm._v(" "),
-      _vm._m(0),
+      _c(
+        "div",
+        {
+          staticClass: "profile-panel-item interactive",
+          attrs: { title: "Deck Builder" },
+          on: {
+            click: function($event) {
+              _vm.showDeckBuilder()
+            }
+          }
+        },
+        [_c("i", { staticClass: "fab fa-stack-overflow" }), _vm._v(" Deck\n  ")]
+      ),
       _vm._v(" "),
       _c(
         "div",
@@ -58142,23 +58141,7 @@ var render = function() {
     ]
   )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      { staticClass: "profile-panel-item", attrs: { title: "Deck Builder" } },
-      [
-        _c("a", { attrs: { href: "/deck" } }, [
-          _c("i", { staticClass: "fab fa-stack-overflow" }),
-          _vm._v(" Deck")
-        ])
-      ]
-    )
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -58311,6 +58294,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -58319,17 +58321,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       gameData: {},
       myPlayerIndex: 0,
       gameID: window.location.href.split('/').pop(),
-
-      players: {
-        1: { id: '', username: '', side_deck: [], num_cards_in_field: 0, cards_in_field: [], set_score: 0, sets_won: 0 },
-        2: { id: '', username: '', side_deck: [], num_cards_in_field: 0, cards_in_field: [], set_score: 0, sets_won: 0 }
-      },
-
+      gameStarted: false,
       currentSet: 1,
       setsToWinGame: 3,
       totalCardsDrawn: 0,
       currentPlayerTurn: 1,
       nextDealerCard: 0,
+      ShowReadyStatus: false,
+      dealToPlayer: 0,
+      waitingForPlayers: true,
+
+      players: {
+        1: { id: '', username: '', side_deck: [], num_cards_in_field: 0, cards_in_field: [], set_score: 0, sets_won: 0, ready: false },
+        2: { id: '', username: '', side_deck: [], num_cards_in_field: 0, cards_in_field: [], set_score: 0, sets_won: 0, ready: false }
+      },
 
       dealerCards: {
         1: { img: '/images/g1.png' },
@@ -58346,13 +58351,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     };
   },
-  mounted: function mounted() {},
   created: function created() {
     var _this = this;
-
-    window.addEventListener("beforeunload", function (e) {
-      console.log("Refreshing or leaving the page will cause you to forfeit this game.");
-    }, false);
 
     // Get Game Data
     axios.get('/game/data/' + this.gameID).then(function (response) {
@@ -58375,17 +58375,38 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       // The player that joins is assigned to player 2
       axios.get('/user/data/' + e.opponent.id).then(function (response) {
         _this.AddPlayer(2, response);
+        _this.waitingForPlayers = false;
       });
     });
 
+    window.Echo.private('player.startgame.game.' + this.gameID).listen('StartGame', function (e) {
+      console.log('Game is starting!');
+      _this.DealCardToPlayer(1, e.random_dealer_card);
+      _this.gameStarted = true;
+      _this.ShowReadyStatus = false;
+    });
+
+    window.Echo.private('player.ready.game.' + this.gameID).listen('ReadyUp', function (e) {
+      console.log('Player ' + e.player_index + ' is ready!');
+      _this.MarkAsReady(e);
+    });
+
+    //When the current player ends their turn, make the other players turn begin, and give them the random card
     window.Echo.private('player.endturn.game.' + this.gameID).listen('PlayerEndTurn', function (e) {
-      //When the current player ends their turn, make the other players turn begin, and draw them a random card
-      _this.DealCardToPlayer(e.data.player_index, e.random_dealer_card);
+
+      if (_this.currentPlayerTurn == 1) {
+        _this.currentPlayerTurn = 2;
+        _this.dealToPlayer = 2;
+      } else {
+        _this.currentPlayerTurn = 1;
+        _this.dealToPlayer = 1;
+      }
+
+      _this.DealCardToPlayer(_this.dealToPlayer, e.random_dealer_card);
     });
 
     window.Echo.private('player.forfeit.game.' + this.gameID).listen('PlayerForfeit', function (e) {
       console.log(e);
-      //
     });
 
     window.Echo.private('player.playcard.game.' + this.gameID).listen('PlayerPlayCard', function (e) {
@@ -58394,16 +58415,42 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     window.Echo.private('player.stand.game.' + this.gameID).listen('PlayerStand', function (e) {
       console.log(e);
-      //
     });
-
-    /*window.Echo.private('player.leftgame.game.' + this.gameID).listen('PlayerLeftGame', e => {
-      console.log(e);
-    });*/
+  },
+  mounted: function mounted() {
+    this.ShowReadyStatus = true;
   },
 
 
   methods: {
+    ReadyUp: function ReadyUp(player_index) {
+      console.log(player_index);
+      axios.post('/game/ready/' + this.gameID, {
+        game_id: this.gameID,
+        player_index: player_index
+      }).then(function (response) {
+        console.log(response);
+      });
+    },
+    MarkAsReady: function MarkAsReady(data) {
+      this.players[data.player_index].ready = true;
+
+      if (this.myPlayerIndex == 1 && this.players[1].ready == true && this.players[2].ready == true) {
+        console.log('call the start game method');
+        this.StartGame();
+      }
+    },
+    StartGame: function StartGame() {
+      this.gameStarted = true;
+      if (this.myPlayerIndex == 1) {
+        // Make a request to the server to serve the first card, starting the game
+        axios.post('/game/start/' + this.gameID, {
+          game_id: this.gameID
+        }).then(function (response) {
+          console.log(response);
+        });
+      }
+    },
     EndTurn: function EndTurn() {
       axios.post('/game/' + this.gameID + '/endturn', {
         username: localStorage.Username,
@@ -58444,6 +58491,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }
       if (this.players[PlayerNumber].id == localStorage.UserID) {
         this.myPlayerIndex = PlayerNumber;
+        if (this.myPlayerIndex == 2) {
+          this.waitingForPlayers = false;
+        }
       }
     },
     DealCardToPlayer: function DealCardToPlayer(playerNumber, dealerCard) {
@@ -58458,19 +58508,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }
       this.totalCardsDrawn += 1;
       this.UpdatePlayerScore(playerNumber);
-      if (playerNumber == 1) {
-        this.currentPlayerTurn = 2;
-      } else {
-        this.currentPlayerTurn = 1;
-      }
     },
     PlaySideCard: function PlaySideCard(card, index, playerNumber) {
       this.players[playerNumber].num_cards_in_field += 1;
 
       if (this.players[playerNumber].side_deck[index] == undefined) {
+
         window.$('#p' + playerNumber + 'c' + this.players[playerNumber].num_cards_in_field).append('<img class="card-image" src="' + card.CardImage + '">');
       } else {
+
         window.$('#p' + playerNumber + 'c' + this.players[playerNumber].num_cards_in_field).append('<img class="card-image" src="' + this.players[playerNumber].side_deck[index].CardImage + '">');
+
         axios.post('/game/' + this.gameID + '/playcard', {
           username: localStorage.Username,
           user_id: localStorage.UserID,
@@ -58627,9 +58675,90 @@ var render = function() {
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "col-2" }, [
-        _c("h2", [_vm._v("Current Set")]),
+        _c(
+          "div",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: this.gameStarted,
+                expression: "this.gameStarted"
+              }
+            ],
+            staticClass: "ScoreCounter"
+          },
+          [
+            _c("h2", [_vm._v("Current Set")]),
+            _vm._v(" "),
+            _c("h3", [_vm._v(_vm._s(_vm.currentSet))])
+          ]
+        ),
         _vm._v(" "),
-        _c("h3", [_vm._v(_vm._s(_vm.currentSet))])
+        _c(
+          "div",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: this.waitingForPlayers,
+                expression: "this.waitingForPlayers"
+              }
+            ],
+            staticClass: "Waiting"
+          },
+          [_c("h2", [_vm._v("Waiting for opponent")])]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: this.ShowReadyStatus,
+                expression: "this.ShowReadyStatus"
+              }
+            ],
+            staticClass: "ReadyStatus"
+          },
+          [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-primary mt-5",
+                on: {
+                  click: function($event) {
+                    _vm.ReadyUp(_vm.myPlayerIndex)
+                  }
+                }
+              },
+              [_vm._v("Ready up")]
+            ),
+            _vm._v(" "),
+            _c("hr"),
+            _vm._v(" "),
+            this.players[1].ready
+              ? _c("p", [_vm._v("Player one: Ready")])
+              : _vm._e(),
+            _vm._v(" "),
+            this.players[1].ready
+              ? _c("i", { staticClass: "fas fa-thumbs-up fa-3x" })
+              : _vm._e(),
+            _vm._v(" "),
+            _c("hr"),
+            _vm._v(" "),
+            this.players[2].ready
+              ? _c("p", [_vm._v("Player two: Ready")])
+              : _vm._e(),
+            _vm._v(" "),
+            this.players[2].ready
+              ? _c("i", { staticClass: "fas fa-thumbs-up fa-3x" })
+              : _vm._e()
+          ]
+        )
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "col-5" }, [
@@ -58935,16 +59064,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   created: function created() {
     this.GetSavedDeck();
+    this.$eventHub.$on('showDeckBuilder', this.showBuilder);
   },
   data: function data() {
     return {
-      deckBuilderError: '',
       selectedCards: [],
       responseMessage: '',
+      deckBuilderVisible: false,
 
       sideDeckCardsPlus: {
         '+1': { img: '/images/p1.png' },
@@ -58978,6 +59111,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
   methods: {
+    showBuilder: function showBuilder() {
+      this.deckBuilderVisible = true;
+    },
+    hideBuilder: function hideBuilder() {
+      this.deckBuilderVisible = false;
+      this.$eventHub.$emit('BuilderClosed');
+    },
     AddCardToSideDeck: function AddCardToSideDeck(value, key) {
       if (this.selectedCards.length < 10) {
         this.selectedCards.push({ CardImage: value.img, CardID: key });
@@ -59029,147 +59169,174 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container-fluid p-4" }, [
-    _vm._m(0),
-    _vm._v(" "),
-    _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-12" }, [
-        _c("h3", [_vm._v("All Cards")]),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "row" },
-          _vm._l(_vm.sideDeckCardsPlus, function(value, key) {
-            return _c("div", [
-              _c("div", { staticClass: "card m-3" }, [
-                _c("img", {
-                  key: key,
-                  staticClass: "mx-auto card-image",
-                  staticStyle: { cursor: "pointer" },
-                  attrs: { src: value.img },
-                  on: {
-                    click: function($event) {
-                      _vm.AddCardToSideDeck(value, key)
-                    }
-                  }
-                })
-              ])
-            ])
-          })
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "row" },
-          _vm._l(_vm.sideDeckCardsMinus, function(value, key) {
-            return _c("div", [
-              _c("div", { staticClass: "card m-3" }, [
-                _c("img", {
-                  key: key,
-                  staticClass: "mx-auto card-image",
-                  staticStyle: { cursor: "pointer" },
-                  attrs: { src: value.img },
-                  on: {
-                    click: function($event) {
-                      _vm.AddCardToSideDeck(value, key)
-                    }
-                  }
-                })
-              ])
-            ])
-          })
-        )
-      ])
-    ]),
-    _vm._v(" "),
-    _c("hr"),
-    _vm._v(" "),
-    _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-12" }, [
-        _c("h3", [_vm._v("Selected Cards")]),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "row" },
-          _vm._l(_vm.selectedCards, function(value, key) {
-            return _c(
-              "div",
-              [
-                _c(
-                  "transition",
-                  {
-                    attrs: {
-                      appear: "",
-                      "enter-active-class": "animated bounceInRight"
-                    }
-                  },
-                  [
+  return _c(
+    "transition",
+    {
+      attrs: {
+        appear: "",
+        "enter-active-class": "animated bounceInRight",
+        "leave-active-class": "animated bounceOutLeft"
+      },
+      on: { "after-leave": function($event) {} }
+    },
+    [
+      _c(
+        "div",
+        {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: _vm.deckBuilderVisible,
+              expression: "deckBuilderVisible"
+            }
+          ],
+          staticClass: "container-fluid p-4"
+        },
+        [
+          _c(
+            "p",
+            {
+              staticStyle: { cursor: "pointer" },
+              on: {
+                click: function($event) {
+                  _vm.hideBuilder()
+                }
+              }
+            },
+            [_c("i", { staticClass: "fas fa-angle-left" }), _vm._v(" Back")]
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "row" }, [
+            _c("div", { staticClass: "col-12" }, [
+              _c("h3", [_vm._v("All Cards")]),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "row" },
+                _vm._l(_vm.sideDeckCardsPlus, function(value, key) {
+                  return _c("div", [
                     _c("div", { staticClass: "card m-3" }, [
                       _c("img", {
                         key: key,
                         staticClass: "mx-auto card-image",
                         staticStyle: { cursor: "pointer" },
-                        attrs: { src: value.CardImage },
+                        attrs: { src: value.img },
                         on: {
                           click: function($event) {
-                            _vm.RemoveCardFromSideDeck(value, key)
+                            _vm.AddCardToSideDeck(value, key)
                           }
                         }
                       })
                     ])
-                  ]
-                )
-              ],
-              1
-            )
-          })
-        )
-      ])
-    ]),
-    _vm._v(" "),
-    _c(
-      "button",
-      {
-        staticClass: "btn btn-primary",
-        on: {
-          click: function($event) {
-            _vm.SaveDeck()
-          }
-        }
-      },
-      [_vm._v("Save Deck")]
-    ),
-    _vm._v(" "),
-    _c(
-      "button",
-      {
-        staticClass: "btn btn-primary",
-        on: {
-          click: function($event) {
-            _vm.ClearDeck()
-          }
-        }
-      },
-      [_vm._v("Clear Deck")]
-    ),
-    _vm._v(" "),
-    _vm.responseMessage
-      ? _c("h1", [_vm._v(_vm._s(_vm.responseMessage))])
-      : _vm._e()
-  ])
+                  ])
+                })
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "row" },
+                _vm._l(_vm.sideDeckCardsMinus, function(value, key) {
+                  return _c("div", [
+                    _c("div", { staticClass: "card m-3" }, [
+                      _c("img", {
+                        key: key,
+                        staticClass: "mx-auto card-image",
+                        staticStyle: { cursor: "pointer" },
+                        attrs: { src: value.img },
+                        on: {
+                          click: function($event) {
+                            _vm.AddCardToSideDeck(value, key)
+                          }
+                        }
+                      })
+                    ])
+                  ])
+                })
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c("hr"),
+          _vm._v(" "),
+          _c("div", { staticClass: "row" }, [
+            _c("div", { staticClass: "col-12" }, [
+              _c("h3", [_vm._v("Selected Cards")]),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "row" },
+                _vm._l(_vm.selectedCards, function(value, key) {
+                  return _c(
+                    "div",
+                    [
+                      _c(
+                        "transition",
+                        {
+                          attrs: {
+                            appear: "",
+                            "enter-active-class": "animated bounceInRight"
+                          }
+                        },
+                        [
+                          _c("div", { staticClass: "card m-3" }, [
+                            _c("img", {
+                              key: key,
+                              staticClass: "mx-auto card-image",
+                              staticStyle: { cursor: "pointer" },
+                              attrs: { src: value.CardImage },
+                              on: {
+                                click: function($event) {
+                                  _vm.RemoveCardFromSideDeck(value, key)
+                                }
+                              }
+                            })
+                          ])
+                        ]
+                      )
+                    ],
+                    1
+                  )
+                })
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-primary",
+              on: {
+                click: function($event) {
+                  _vm.SaveDeck()
+                }
+              }
+            },
+            [_vm._v("Save Deck")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-primary",
+              on: {
+                click: function($event) {
+                  _vm.ClearDeck()
+                }
+              }
+            },
+            [_vm._v("Clear Deck")]
+          ),
+          _vm._v(" "),
+          _vm.responseMessage
+            ? _c("h1", [_vm._v(_vm._s(_vm.responseMessage))])
+            : _vm._e()
+        ]
+      )
+    ]
+  )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("p", { staticStyle: { cursor: "pointer" } }, [
-      _c("i", { staticClass: "fas fa-angle-left" }),
-      _vm._v(" "),
-      _c("a", { attrs: { href: "/" } }, [_vm._v("Back")])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {

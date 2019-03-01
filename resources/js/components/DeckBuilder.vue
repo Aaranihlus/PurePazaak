@@ -1,51 +1,54 @@
 <template>
-  <div class="container-fluid p-4">
 
-    <p style="cursor: pointer;"><i class="fas fa-angle-left"></i> <a href="/">Back</a></p>
+  <transition appear enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-on:after-leave="">
+    <div class="container-fluid p-4" v-show="deckBuilderVisible">
 
-    <div class="row">
-      <div class="col-12">
-        <h3>All Cards</h3>
-        <div class="row">
-          <div v-for="(value, key) in sideDeckCardsPlus">
-            <div class="card m-3">
-              <img class="mx-auto card-image" style="cursor: pointer" :key="key" :src="value.img" v-on:click="AddCardToSideDeck(value, key)">
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div v-for="(value, key) in sideDeckCardsMinus">
-            <div class="card m-3">
-              <img class="mx-auto card-image" style="cursor: pointer" :key="key" :src="value.img" v-on:click="AddCardToSideDeck(value, key)">
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+      <p v-on:click="hideBuilder()" style="cursor: pointer;"><i class="fas fa-angle-left"></i> Back</p>
 
-    <hr>
-
-    <div class="row">
-      <div class="col-12">
-        <h3>Selected Cards</h3>
-        <div class="row">
-          <div v-for="(value, key) in selectedCards">
-            <transition appear enter-active-class="animated bounceInRight">
+      <div class="row">
+        <div class="col-12">
+          <h3>All Cards</h3>
+          <div class="row">
+            <div v-for="(value, key) in sideDeckCardsPlus">
               <div class="card m-3">
-                <img class="mx-auto card-image" style="cursor: pointer" :key="key" :src="value.CardImage" v-on:click="RemoveCardFromSideDeck(value, key)">
+                <img class="mx-auto card-image" style="cursor: pointer" :key="key" :src="value.img" v-on:click="AddCardToSideDeck(value, key)">
               </div>
-            </transition>
+            </div>
+          </div>
+          <div class="row">
+            <div v-for="(value, key) in sideDeckCardsMinus">
+              <div class="card m-3">
+                <img class="mx-auto card-image" style="cursor: pointer" :key="key" :src="value.img" v-on:click="AddCardToSideDeck(value, key)">
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
+      <hr>
+
+      <div class="row">
+        <div class="col-12">
+          <h3>Selected Cards</h3>
+          <div class="row">
+            <div v-for="(value, key) in selectedCards">
+              <transition appear enter-active-class="animated bounceInRight">
+                <div class="card m-3">
+                  <img class="mx-auto card-image" style="cursor: pointer" :key="key" :src="value.CardImage" v-on:click="RemoveCardFromSideDeck(value, key)">
+                </div>
+              </transition>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" v-on:click="SaveDeck()">Save Deck</button>
+      <button class="btn btn-primary" v-on:click="ClearDeck()">Clear Deck</button>
+
+      <h1 v-if="responseMessage">{{ responseMessage }}</h1>
+
     </div>
-
-    <button class="btn btn-primary" v-on:click="SaveDeck()">Save Deck</button>
-    <button class="btn btn-primary" v-on:click="ClearDeck()">Clear Deck</button>
-
-    <h1 v-if="responseMessage">{{ responseMessage }}</h1>
-
-  </div>
+  </transition>
 </template>
 
 <script>
@@ -53,13 +56,14 @@ export default {
 
   created() {
     this.GetSavedDeck();
+    this.$eventHub.$on('showDeckBuilder', this.showBuilder);
   },
 
   data() {
     return {
-      deckBuilderError: '',
       selectedCards: [],
       responseMessage: '',
+      deckBuilderVisible: false,
 
       sideDeckCardsPlus: {
         '+1': { img: '/images/p1.png' },
@@ -92,6 +96,15 @@ export default {
   },
 
   methods: {
+
+    showBuilder () {
+      this.deckBuilderVisible = true;
+    },
+
+    hideBuilder () {
+      this.deckBuilderVisible = false;
+      this.$eventHub.$emit('BuilderClosed');
+    },
 
     AddCardToSideDeck(value, key) {
       if ( this.selectedCards.length < 10 ) {

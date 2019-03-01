@@ -4,6 +4,10 @@
 
 <game-mode></game-mode>
 
+<deck-builder></deck-builder>
+
 <create-profile></create-profile>
+
+
 
 @endsection('content')

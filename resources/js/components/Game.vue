@@ -41,10 +41,29 @@
       </div>
 
       <div class="col-2">
-        <h2>Current Set</h2>
-        <h3>{{ currentSet }}</h3>
-      </div>
 
+        <div class="ScoreCounter" v-show="this.gameStarted">
+          <h2>Current Set</h2>
+          <h3>{{ currentSet }}</h3>
+        </div>
+
+        <div class="Waiting" v-show="this.waitingForPlayers">
+          <h2>Waiting for opponent</h2>
+        </div>
+
+        <div class="ReadyStatus" v-show="this.ShowReadyStatus">
+          <button class="btn btn-primary mt-5" v-on:click="ReadyUp(myPlayerIndex)">Ready up</button>
+          <hr>
+          <p v-if="this.players[1].ready">Player one: Ready</p>
+          <!--<p v-else>Player one: Not Ready-->
+          <i class="fas fa-thumbs-up fa-3x" v-if="this.players[1].ready"></i>
+          <hr>
+          <p v-if="this.players[2].ready">Player two: Ready</p>
+          <!--<p v-else>Player two: Not Ready-->
+          <i class="fas fa-thumbs-up fa-3x" v-if="this.players[2].ready"></i>
+        </div>
+
+      </div>
 
       <div class="col-5">
         <div class="container">
@@ -97,17 +116,20 @@ export default {
       gameData: {},
       myPlayerIndex: 0,
       gameID: window.location.href.split('/').pop(),
-
-      players: {
-        1: { id: '', username: '', side_deck: [], num_cards_in_field: 0, cards_in_field: [], set_score: 0, sets_won: 0 },
-        2: { id: '', username: '', side_deck: [], num_cards_in_field: 0, cards_in_field: [], set_score: 0, sets_won: 0 },
-      },
-
+      gameStarted: false,
       currentSet: 1,
       setsToWinGame: 3,
       totalCardsDrawn: 0,
       currentPlayerTurn: 1,
       nextDealerCard: 0,
+      ShowReadyStatus: false,
+      dealToPlayer: 0,
+      waitingForPlayers: true,
+
+      players: {
+        1: { id: '', username: '', side_deck: [], num_cards_in_field: 0, cards_in_field: [], set_score: 0, sets_won: 0, ready: false },
+        2: { id: '', username: '', side_deck: [], num_cards_in_field: 0, cards_in_field: [], set_score: 0, sets_won: 0, ready: false },
+      },
 
       dealerCards: {
         1: { img: '/images/g1.png' },
@@ -125,15 +147,7 @@ export default {
     }
   },
 
-  mounted () {
-
-  },
-
   created () {
-
-    window.addEventListener("beforeunload", function(e){
-      console.log("Refreshing or leaving the page will cause you to forfeit this game.")
-    }, false);
 
     // Get Game Data
     axios.get('/game/data/' + this.gameID).then(response => {
@@ -156,18 +170,39 @@ export default {
       // The player that joins is assigned to player 2
       axios.get('/user/data/' + e.opponent.id).then(response => {
         this.AddPlayer(2, response)
-      })
+        this.waitingForPlayers = false
+      });
+    });
+
+    window.Echo.private('player.startgame.game.' + this.gameID).listen('StartGame', e => {
+      console.log('Game is starting!');
+      this.DealCardToPlayer(1, e.random_dealer_card);
+      this.gameStarted = true;
+      this.ShowReadyStatus = false;
+    });
+
+    window.Echo.private('player.ready.game.' + this.gameID).listen('ReadyUp', e => {
+      console.log('Player ' + e.player_index + ' is ready!');
+      this.MarkAsReady(e);
     });
 
 
+    //When the current player ends their turn, make the other players turn begin, and give them the random card
     window.Echo.private('player.endturn.game.' + this.gameID).listen('PlayerEndTurn', e => {
-      //When the current player ends their turn, make the other players turn begin, and draw them a random card
-      this.DealCardToPlayer(e.data.player_index, e.random_dealer_card);
+
+      if(this.currentPlayerTurn == 1){
+        this.currentPlayerTurn = 2
+        this.dealToPlayer = 2
+      } else {
+        this.currentPlayerTurn = 1
+        this.dealToPlayer = 1
+      }
+
+      this.DealCardToPlayer(this.dealToPlayer, e.random_dealer_card);
     });
 
     window.Echo.private('player.forfeit.game.' + this.gameID).listen('PlayerForfeit', e => {
       console.log(e);
-      //
     });
 
     window.Echo.private('player.playcard.game.' + this.gameID).listen('PlayerPlayCard', e => {
@@ -176,18 +211,53 @@ export default {
 
     window.Echo.private('player.stand.game.' + this.gameID).listen('PlayerStand', e => {
       console.log(e);
-      //
     });
 
-    /*window.Echo.private('player.leftgame.game.' + this.gameID).listen('PlayerLeftGame', e => {
-      console.log(e);
-    });*/
 
+
+  },
+
+  mounted () {
+    this.ShowReadyStatus = true;
   },
 
   methods: {
 
-    EndTurn() {
+    ReadyUp (player_index) {
+      console.log(player_index);
+      axios.post('/game/ready/'+ this.gameID, {
+        game_id: this.gameID,
+        player_index: player_index
+      })
+      .then((response) => {
+        console.log(response)
+      });
+    },
+
+    MarkAsReady (data) {
+      this.players[data.player_index].ready = true;
+
+      if(this.myPlayerIndex == 1 && this.players[1].ready == true && this.players[2].ready == true){
+        console.log('call the start game method');
+        this.StartGame();
+      }
+
+    },
+
+    StartGame () {
+      this.gameStarted = true;
+      if( this.myPlayerIndex == 1) {
+        // Make a request to the server to serve the first card, starting the game
+        axios.post('/game/start/'+ this.gameID, {
+          game_id: this.gameID
+        })
+        .then((response) => {
+          console.log(response)
+        });
+      }
+    },
+
+    EndTurn () {
       axios.post('/game/'+ this.gameID +'/endturn', {
         username: localStorage.Username,
         user_id: localStorage.UserID,
@@ -199,7 +269,7 @@ export default {
       });
     },
 
-    Stand() {
+    Stand () {
       axios.post('/game/'+ this.gameID +'/setStand', {
         username: localStorage.Username,
         user_id: localStorage.UserID,
@@ -210,7 +280,7 @@ export default {
       });
     },
 
-    Forfeit() {
+    Forfeit () {
       axios.post('/game/'+ this.gameID +'/forfeitGame', {
         username: localStorage.Username,
         user_id: localStorage.UserID,
@@ -220,7 +290,6 @@ export default {
         console.log(response)
       });
     },
-
 
     AddPlayer (PlayerNumber, Data) {
       this.players[PlayerNumber].username = Data.data.username;
@@ -234,9 +303,11 @@ export default {
       }
       if (this.players[PlayerNumber].id == localStorage.UserID) {
         this.myPlayerIndex = PlayerNumber
+        if (this.myPlayerIndex == 2) {
+          this.waitingForPlayers = false
+        }
       }
     },
-
 
     DealCardToPlayer(playerNumber, dealerCard) {
       this.PlaySound('DrawCard')
@@ -250,21 +321,19 @@ export default {
       }
       this.totalCardsDrawn += 1;
       this.UpdatePlayerScore(playerNumber);
-      if (playerNumber == 1) {
-        this.currentPlayerTurn = 2
-      } else {
-        this.currentPlayerTurn = 1
-      }
     },
-
 
     PlaySideCard(card, index, playerNumber) {
       this.players[playerNumber].num_cards_in_field += 1
 
       if( this.players[playerNumber].side_deck[index] == undefined ) {
+
         window.$('#p' + playerNumber + 'c' + this.players[playerNumber].num_cards_in_field).append('<img class="card-image" src="' + card.CardImage + '">')
+
       } else {
+
         window.$('#p' + playerNumber + 'c' + this.players[playerNumber].num_cards_in_field).append('<img class="card-image" src="' + this.players[playerNumber].side_deck[index].CardImage + '">')
+
         axios.post('/game/'+ this.gameID +'/playcard', {
           username: localStorage.Username,
           user_id: localStorage.UserID,
@@ -275,6 +344,7 @@ export default {
         .then((response) => {
           console.log(response)
         });
+
       }
 
       this.players[playerNumber].side_deck.splice(index, 1)

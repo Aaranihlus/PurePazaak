@@ -2,7 +2,7 @@
 
   <div class="container">
 
-    <transition appear enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-on:after-leave="versusChosen = true">
+    <transition appear enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-on:after-leave="">
       <div class="row" style="margin-top:25vh;" v-show="showGameModes">
         <div class="col-5 game-mode-panel">
           <i class="fas fa-user fa-5x"></i>
@@ -10,7 +10,7 @@
           <p>Play a practice game against the computer</p>
         </div>
         <div class="col-2"></div>
-        <div class="col-5 game-mode-panel interactive" v-on:click="showGameModes = false">
+        <div class="col-5 game-mode-panel interactive" v-on:click="showGameModes = false, versusChosen = true">
           <i class="fas fa-users fa-5x"></i>
           <h3>versus</h3>
           <p>Go head-to-head with other players</p>
@@ -18,20 +18,20 @@
       </div>
     </transition>
 
-    <transition appear enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-on:after-leave="versusChosen = false">
+    <transition appear enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-on:after-leave="">
       <div class="row" style="margin-top:25vh;" v-show="versusChosen">
-        <div class="col-5 game-mode-panel">
+        <div class="col-5 game-mode-panel interactive">
           <i class="fas fa-plus-square fa-5x"></i>
           <h2 v-on:click="OpenCreateGame()">Create Game</h2>
           <p>Create a new public game</p>
         </div>
         <div class="col-2"></div>
-        <div class="col-5 game-mode-panel">
+        <div class="col-5 game-mode-panel interactive">
           <i class="fas fa-sign-in-alt fa-5x"></i>
           <a href="/games"><h3>Join Game</h3></a>
           <p>Join another players public game</p>
         </div>
-        <p style="cursor: pointer;" v-on:click="showGameModes = true"><i class="fas fa-angle-left"></i> Back</p>
+        <p style="cursor: pointer;" v-on:click="versusChosen = false, showGameModes = true"><i class="fas fa-angle-left"></i> Back</p>
       </div>
     </transition>
 
@@ -76,6 +76,10 @@ export default {
   created() {
     this.$eventHub.$on('NoProfileFound', this.ChooseGameMode)
 
+    this.$eventHub.$on('showDeckBuilder', this.HideBoth);
+
+    this.$eventHub.$on('BuilderClosed', this.BackToGameModes);
+
     this.$eventHub.$on('ProfileFound', () => {
       this.showGameModes = true
     })
@@ -98,6 +102,7 @@ export default {
         UserID: localStorage.UserID
       })
       .then(function(response) {
+        console.log(response)
         if (response.status == 200) {
           location.assign(response.data);
         }
@@ -122,7 +127,13 @@ export default {
     BackToGameModes() {
       this.versusChosen = false
       this.showGameModes = true
+    },
+
+    HideBoth () {
+      this.versusChosen = false
+      this.showGameModes = false
     }
+
   }
 }
 </script>
