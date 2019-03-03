@@ -24,6 +24,7 @@ Vue.component('game', require('./components/Game.vue'));
 Vue.component('deck-builder', require('./components/DeckBuilder.vue'));
 Vue.component('game-list', require('./components/GameList.vue'));
 Vue.component('game-listing', require('./components/GameListing.vue'));
+Vue.component('versus-menu', require('./components/VersusMenu.vue'));
 
 // const files = require.context('./', true, /\.vue$/i)
 

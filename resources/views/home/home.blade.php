@@ -8,6 +8,6 @@
 
 <create-profile></create-profile>
 
-
+<versus-menu></versus-menu>
 
 @endsection('content')

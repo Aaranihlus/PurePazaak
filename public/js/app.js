@@ -14023,6 +14023,7 @@ Vue.component('game', __webpack_require__(51));
 Vue.component('deck-builder', __webpack_require__(54));
 Vue.component('game-list', __webpack_require__(57));
 Vue.component('game-listing', __webpack_require__(60));
+Vue.component('versus-menu', __webpack_require__(87));
 
 // const files = require.context('./', true, /\.vue$/i)
 
@@ -57183,45 +57184,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -57242,6 +57204,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
   methods: {
+    ShowVersus: function ShowVersus() {
+      this.showGameModes = false;
+      this.$eventHub.$emit('VersusChosen');
+    },
     ChooseGameMode: function ChooseGameMode() {
       this.showGameModes = false;
     },
@@ -57335,7 +57301,7 @@ var render = function() {
                   staticClass: "col-5 game-mode-panel interactive",
                   on: {
                     click: function($event) {
-                      ;(_vm.showGameModes = false), (_vm.versusChosen = true)
+                      _vm.ShowVersus()
                     }
                   }
                 },
@@ -57349,189 +57315,6 @@ var render = function() {
               )
             ]
           )
-        ]
-      ),
-      _vm._v(" "),
-      _c(
-        "transition",
-        {
-          attrs: {
-            appear: "",
-            "enter-active-class": "animated bounceInRight",
-            "leave-active-class": "animated bounceOutLeft"
-          },
-          on: { "after-leave": function($event) {} }
-        },
-        [
-          _c(
-            "div",
-            {
-              directives: [
-                {
-                  name: "show",
-                  rawName: "v-show",
-                  value: _vm.versusChosen,
-                  expression: "versusChosen"
-                }
-              ],
-              staticClass: "row",
-              staticStyle: { "margin-top": "25vh" }
-            },
-            [
-              _c("div", { staticClass: "col-5 game-mode-panel interactive" }, [
-                _c("i", { staticClass: "fas fa-plus-square fa-5x" }),
-                _vm._v(" "),
-                _c(
-                  "h2",
-                  {
-                    on: {
-                      click: function($event) {
-                        _vm.OpenCreateGame()
-                      }
-                    }
-                  },
-                  [_vm._v("Create Game")]
-                ),
-                _vm._v(" "),
-                _c("p", [_vm._v("Create a new public game")])
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-2" }),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-5 game-mode-panel interactive" }, [
-                _c("i", { staticClass: "fas fa-sign-in-alt fa-5x" }),
-                _vm._v(" "),
-                _c("a", { attrs: { href: "/games" } }, [
-                  _c("h3", [_vm._v("Join Game")])
-                ]),
-                _vm._v(" "),
-                _c("p", [_vm._v("Join another players public game")])
-              ]),
-              _vm._v(" "),
-              _c(
-                "h4",
-                {
-                  staticStyle: { cursor: "pointer" },
-                  on: {
-                    click: function($event) {
-                      ;(_vm.versusChosen = false), (_vm.showGameModes = true)
-                    }
-                  }
-                },
-                [_c("i", { staticClass: "fas fa-angle-left" }), _vm._v(" Back")]
-              )
-            ]
-          )
-        ]
-      ),
-      _vm._v(" "),
-      _c(
-        "transition",
-        {
-          attrs: {
-            appear: "",
-            "enter-active-class": "animated bounceInRight",
-            "leave-active-class": "animated bounceOutLeft"
-          }
-        },
-        [
-          _vm.createGameActive
-            ? _c(
-                "div",
-                {
-                  staticClass: "modal game-model-panel",
-                  staticStyle: { display: "block", "margin-top": "4%" }
-                },
-                [
-                  _c(
-                    "div",
-                    {
-                      staticClass: "modal-dialog",
-                      staticStyle: { border: "1px solid white" },
-                      attrs: { role: "document" }
-                    },
-                    [
-                      _c("div", { staticClass: "modal-content" }, [
-                        _c(
-                          "div",
-                          {
-                            staticClass: "modal-header",
-                            staticStyle: { "background-color": "black" }
-                          },
-                          [
-                            _c("h4", { staticClass: "modal-title" }, [
-                              _vm._v("Create New Game")
-                            ])
-                          ]
-                        ),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "modal-body text-left" }, [
-                          _c("label", [_vm._v("Wager")]),
-                          _vm._v(" "),
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.gameWager,
-                                expression: "gameWager"
-                              }
-                            ],
-                            attrs: { type: "number" },
-                            domProps: { value: _vm.gameWager },
-                            on: {
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.gameWager = $event.target.value
-                              }
-                            }
-                          })
-                        ]),
-                        _vm._v(" "),
-                        _c(
-                          "div",
-                          {
-                            staticClass: "modal-footer p-2",
-                            staticStyle: { "background-color": "black" }
-                          },
-                          [
-                            _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-primary",
-                                attrs: { type: "button" },
-                                on: {
-                                  click: function($event) {
-                                    _vm.CancelCreateGame()
-                                  }
-                                }
-                              },
-                              [_vm._v(" Cancel ")]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-primary",
-                                attrs: { type: "button" },
-                                on: {
-                                  click: function($event) {
-                                    _vm.CreateNewGame()
-                                  }
-                                }
-                              },
-                              [_vm._v(" Accept ")]
-                            )
-                          ]
-                        )
-                      ])
-                    ]
-                  )
-                ]
-              )
-            : _vm._e()
         ]
       )
     ],
@@ -57710,7 +57493,7 @@ var render = function() {
     "div",
     {
       staticClass: "container-fluid text-center flex flex-center",
-      staticStyle: { width: "100vh", height: "100vh", "overflow-x": "hidden" }
+      staticStyle: { "overflow-x": "hidden" }
     },
     [
       _c(
@@ -57743,15 +57526,24 @@ var render = function() {
               staticStyle: {
                 "background-color": "black",
                 padding: "2%",
-                width: "100%"
+                width: "50%",
+                "margin-top": "19%"
               }
             },
             [
               _c("h1", [_vm._v("Welcome to Pure Pazaak")]),
               _vm._v(" "),
-              _c("p", [
-                _vm._v("Before you can play, you must first choose a username")
-              ]),
+              _c(
+                "p",
+                {
+                  staticStyle: { "margin-top": "5px", "margin-bottom": "10px" }
+                },
+                [
+                  _vm._v(
+                    "Before you can play, you must first choose a username"
+                  )
+                ]
+              ),
               _vm._v(" "),
               _c(
                 "form",
@@ -57875,19 +57667,26 @@ var render = function() {
               staticStyle: {
                 "background-color": "black",
                 padding: "2%",
-                width: "100%"
+                width: "50%",
+                "margin-top": "19%"
               }
             },
             [
               _c("h1", [_vm._v("Congratulations!")]),
               _vm._v(" "),
-              _c("p", [
-                _vm._v(
-                  "Hello " +
-                    _vm._s(this.Username) +
-                    ", here are some credits to get you started"
-                )
-              ]),
+              _c(
+                "p",
+                {
+                  staticStyle: { "margin-top": "5px", "margin-bottom": "10px" }
+                },
+                [
+                  _vm._v(
+                    "Hello " +
+                      _vm._s(this.Username) +
+                      ", here are some credits to get you started"
+                  )
+                ]
+              ),
               _vm._v(" "),
               _c("div", { staticClass: "flex flex-center" }, [
                 _c("img", {
@@ -59565,6 +59364,374 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 64 */,
+/* 65 */,
+/* 66 */,
+/* 67 */,
+/* 68 */,
+/* 69 */,
+/* 70 */,
+/* 71 */,
+/* 72 */,
+/* 73 */,
+/* 74 */,
+/* 75 */,
+/* 76 */,
+/* 77 */,
+/* 78 */,
+/* 79 */,
+/* 80 */,
+/* 81 */,
+/* 82 */,
+/* 83 */,
+/* 84 */,
+/* 85 */,
+/* 86 */,
+/* 87 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(88)
+/* template */
+var __vue_template__ = __webpack_require__(89)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/VersusMenu.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-31926078", Component.options)
+  } else {
+    hotAPI.reload("data-v-31926078", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 88 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      versusChosen: false,
+      createGameActive: false,
+      gameWager: 0
+    };
+  },
+  created: function created() {
+    this.$eventHub.$on('VersusChosen', this.ShowVersus);
+  },
+
+
+  methods: {
+    ShowVersus: function ShowVersus() {
+      console.log("show versus");
+      this.versusChosen = true;
+    },
+    CreateNewGame: function CreateNewGame() {
+      axios.post('/game', {
+        Wager: this.gameWager,
+        UserID: localStorage.UserID
+      }).then(function (response) {
+        console.log(response);
+        if (response.status == 200) {
+          location.assign(response.data);
+        }
+      }).catch(function (error) {
+        console.log(error);
+      });
+    },
+    CancelCreateGame: function CancelCreateGame() {
+      this.createGameActive = false;
+    },
+    OpenCreateGame: function OpenCreateGame() {
+      this.createGameActive = true;
+    }
+  }
+});
+
+/***/ }),
+/* 89 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "container" },
+    [
+      _c(
+        "transition",
+        {
+          attrs: {
+            appear: "",
+            "enter-active-class": "animated bounceInRight",
+            "leave-active-class": "animated bounceOutLeft"
+          },
+          on: { "after-leave": function($event) {} }
+        },
+        [
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.versusChosen,
+                  expression: "versusChosen"
+                }
+              ],
+              staticClass: "row",
+              staticStyle: { "margin-top": "25vh" }
+            },
+            [
+              _c("div", { staticClass: "col-5 game-mode-panel interactive" }, [
+                _c("i", { staticClass: "fas fa-plus-square fa-5x" }),
+                _vm._v(" "),
+                _c(
+                  "h2",
+                  {
+                    on: {
+                      click: function($event) {
+                        _vm.OpenCreateGame()
+                      }
+                    }
+                  },
+                  [_vm._v("Create Game")]
+                ),
+                _vm._v(" "),
+                _c("p", [_vm._v("Create a new public game")])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-2" }),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-5 game-mode-panel interactive" }, [
+                _c("i", { staticClass: "fas fa-sign-in-alt fa-5x" }),
+                _vm._v(" "),
+                _c("a", { attrs: { href: "/games" } }, [
+                  _c("h3", [_vm._v("Join Game")])
+                ]),
+                _vm._v(" "),
+                _c("p", [_vm._v("Join another players public game")])
+              ]),
+              _vm._v(" "),
+              _c(
+                "h4",
+                {
+                  staticStyle: { cursor: "pointer" },
+                  on: {
+                    click: function($event) {
+                      ;(_vm.versusChosen = false), (_vm.showGameModes = true)
+                    }
+                  }
+                },
+                [_c("i", { staticClass: "fas fa-angle-left" }), _vm._v(" Back")]
+              )
+            ]
+          )
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "transition",
+        {
+          attrs: {
+            appear: "",
+            "enter-active-class": "animated bounceInRight",
+            "leave-active-class": "animated bounceOutLeft"
+          }
+        },
+        [
+          _vm.createGameActive
+            ? _c(
+                "div",
+                {
+                  staticClass: "modal game-model-panel",
+                  staticStyle: { display: "block", "margin-top": "4%" }
+                },
+                [
+                  _c(
+                    "div",
+                    {
+                      staticClass: "modal-dialog",
+                      staticStyle: { border: "1px solid white" },
+                      attrs: { role: "document" }
+                    },
+                    [
+                      _c("div", { staticClass: "modal-content" }, [
+                        _c(
+                          "div",
+                          {
+                            staticClass: "modal-header",
+                            staticStyle: { "background-color": "black" }
+                          },
+                          [
+                            _c("h4", { staticClass: "modal-title" }, [
+                              _vm._v("Create New Game")
+                            ])
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "modal-body text-left" }, [
+                          _c("label", [_vm._v("Wager")]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.gameWager,
+                                expression: "gameWager"
+                              }
+                            ],
+                            attrs: { type: "number" },
+                            domProps: { value: _vm.gameWager },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.gameWager = $event.target.value
+                              }
+                            }
+                          })
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          {
+                            staticClass: "modal-footer p-2",
+                            staticStyle: { "background-color": "black" }
+                          },
+                          [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-primary",
+                                attrs: { type: "button" },
+                                on: {
+                                  click: function($event) {
+                                    _vm.CancelCreateGame()
+                                  }
+                                }
+                              },
+                              [_vm._v(" Cancel ")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-primary",
+                                attrs: { type: "button" },
+                                on: {
+                                  click: function($event) {
+                                    _vm.CreateNewGame()
+                                  }
+                                }
+                              },
+                              [_vm._v(" Accept ")]
+                            )
+                          ]
+                        )
+                      ])
+                    ]
+                  )
+                ]
+              )
+            : _vm._e()
+        ]
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-31926078", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

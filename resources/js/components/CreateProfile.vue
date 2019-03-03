@@ -1,10 +1,10 @@
 <template>
-  <div class="container-fluid text-center flex flex-center" style="width:100vh; height:100vh; overflow-x: hidden;">
+  <div class="container-fluid text-center flex flex-center" style="overflow-x: hidden;">
 
     <transition appear enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-on:after-leave="profileCreatedSuccessfully = true">
-      <div class="round-border" style="background-color: black; padding: 2%; width:100%;" v-show="showCreateProfileForm">
+      <div class="round-border" style="background-color: black; padding: 2%; width:50%; margin-top:19%;" v-show="showCreateProfileForm">
         <h1>Welcome to Pure Pazaak</h1>
-        <p>Before you can play, you must first choose a username</p>
+        <p style="margin-top: 5px; margin-bottom: 10px;">Before you can play, you must first choose a username</p>
 
         <form v-on:submit.prevent="CreatePlayerProfile()">
           <div class="row mx-auto" style="max-width:50%;">
@@ -27,9 +27,9 @@
     </transition>
 
     <transition enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-on:after-leave="GoToMainMenu()">
-      <div class="round-border" style="background-color: black; padding: 2%; width:100%;" v-show="profileCreatedSuccessfully">
+      <div class="round-border" style="background-color: black; padding: 2%; width:50%; margin-top:19%;" v-show="profileCreatedSuccessfully">
         <h1>Congratulations!</h1>
-        <p>Hello {{ this.Username }}, here are some credits to get you started</p>
+        <p style="margin-top: 5px; margin-bottom: 10px;">Hello {{ this.Username }}, here are some credits to get you started</p>
         <div class="flex flex-center">
           <img src="/images/credit.png" style="width:10%" class="img-fluid">
           <h2>500</h2>
