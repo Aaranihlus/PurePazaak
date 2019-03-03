@@ -150,7 +150,6 @@ export default {
     // Get Game Data
     axios.get('/game/data/' + this.gameID).then(response => {
       this.gameData = response.data
-
       // The creator of the game always joins first, so we will grab their data and assign it to player 1
       axios.get('/user/data/' + this.gameData.creator_id).then(response => {
         this.AddPlayer(1, response)
@@ -159,12 +158,12 @@ export default {
       // When the opponent joins the game, we retrive their data and store them as player 2
       axios.get('/user/data/' + this.gameData.opponent_id).then(response => {
         this.AddPlayer(2, response)
-      })
+      });
+
     });
 
     // An opponent_id will not be available as soon as the game starts, so the creator of the game must listen for another player joining
-    window.Echo.private('join.game.' + this.gameID).listen('PlayerJoinedGame', e => {
-      console.log('Player is joining the game!')
+    window.Echo.private('game.event.'+this.gameID).listen('PlayerJoinedGame', e => {
       // The player that joins is assigned to player 2
       axios.get('/user/data/' + e.opponent.id).then(response => {
         this.AddPlayer(2, response)
@@ -173,22 +172,19 @@ export default {
       });
     });
 
-    window.Echo.private('player.startgame.game.' + this.gameID).listen('StartGame', e => {
-      console.log('Game is starting!');
+    window.Echo.private('game.event.'+this.gameID).listen('StartGame', e => {
       this.DealCardToPlayer(1, e.random_dealer_card);
       this.gameStarted = true;
       this.ShowReadyStatus = false;
     });
 
-    window.Echo.private('player.ready.game.' + this.gameID).listen('ReadyUp', e => {
-      console.log('Player ' + e.player_index + ' is ready!');
+    window.Echo.private('game.event.'+this.gameID).listen('ReadyUp', e => {
       this.MarkAsReady(e);
     });
 
 
     //When the current player ends their turn, make the other players turn begin, and give them the random card
-    window.Echo.private('player.endturn.game.' + this.gameID).listen('PlayerEndTurn', e => {
-
+    window.Echo.private('game.event.'+this.gameID).listen('PlayerEndTurn', e => {
       if(this.currentPlayerTurn == 1){
         this.currentPlayerTurn = 2
         this.dealToPlayer = 2
@@ -196,58 +192,45 @@ export default {
         this.currentPlayerTurn = 1
         this.dealToPlayer = 1
       }
-
       this.DealCardToPlayer(this.dealToPlayer, e.random_dealer_card);
     });
 
-    window.Echo.private('player.forfeit.game.' + this.gameID).listen('PlayerForfeit', e => {
-      console.log(e);
+    window.Echo.private('game.event.'+this.gameID).listen('PlayerForfeit', e => {
+
     });
 
-    window.Echo.private('player.playcard.game.' + this.gameID).listen('PlayerPlayCard', e => {
+    window.Echo.private('game.event.'+this.gameID).listen('PlayerPlayCard', e => {
       this.PlaySideCard(e.data.card, e.data.index, e.data.playerNumber)
     });
 
-    window.Echo.private('player.stand.game.' + this.gameID).listen('PlayerStand', e => {
-      console.log(e);
+    window.Echo.private('game.event.'+this.gameID).listen('PlayerStand', e => {
+
     });
-
-
 
   },
 
   methods: {
 
     ReadyUp (player_index) {
-      console.log(player_index);
-      axios.post('/game/ready/'+ this.gameID, {
+      axios.post('/game/ready/' + this.gameID, {
         game_id: this.gameID,
         player_index: player_index
-      })
-      .then((response) => {
-        console.log(response)
       });
     },
 
     MarkAsReady (data) {
       this.players[data.player_index].ready = true;
-
       if(this.myPlayerIndex == 1 && this.players[1].ready == true && this.players[2].ready == true){
-        console.log('call the start game method');
         this.StartGame();
       }
-
     },
 
     StartGame () {
       this.gameStarted = true;
-      if( this.myPlayerIndex == 1) {
+      if( this.myPlayerIndex == 1 ) {
         // Make a request to the server to serve the first card, starting the game
         axios.post('/game/start/'+ this.gameID, {
           game_id: this.gameID
-        })
-        .then((response) => {
-          console.log(response)
         });
       }
     },
@@ -258,9 +241,6 @@ export default {
         user_id: localStorage.UserID,
         game_id: this.gameID,
         player_index: this.myPlayerIndex
-      })
-      .then((response) => {
-        console.log(response)
       });
     },
 
@@ -269,9 +249,6 @@ export default {
         username: localStorage.Username,
         user_id: localStorage.UserID,
         game_id: this.gameID
-      })
-      .then((response) => {
-        console.log(response)
       });
     },
 
@@ -280,9 +257,6 @@ export default {
         username: localStorage.Username,
         user_id: localStorage.UserID,
         game_id: this.gameID
-      })
-      .then((response) => {
-        console.log(response)
       });
     },
 
@@ -321,30 +295,19 @@ export default {
 
     PlaySideCard(card, index, playerNumber) {
       this.players[playerNumber].num_cards_in_field += 1
-
       if( this.players[playerNumber].side_deck[index] == undefined ) {
-
         window.$('#p' + playerNumber + 'c' + this.players[playerNumber].num_cards_in_field).append('<img class="card-image" src="' + card.CardImage + '">')
-
       } else {
-
         window.$('#p' + playerNumber + 'c' + this.players[playerNumber].num_cards_in_field).append('<img class="card-image" src="' + this.players[playerNumber].side_deck[index].CardImage + '">')
-
         axios.post('/game/'+ this.gameID +'/playcard', {
           username: localStorage.Username,
           user_id: localStorage.UserID,
           game_id: this.gameID,
           playerNumber: playerNumber,
           card: card
-        })
-        .then((response) => {
-          console.log(response)
         });
-
       }
-
       this.players[playerNumber].side_deck.splice(index, 1)
-
     },
 
     UpdatePlayerScore() {

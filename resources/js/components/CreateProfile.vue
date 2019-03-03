@@ -34,7 +34,7 @@
           <img src="/images/credit.png" style="width:10%" class="img-fluid">
           <h2>500</h2>
         </div>
-        <button v-on:click="profileCreatedSuccessfully = false" class="btn btn-primary">Play</button>
+        <button v-on:click="Play()" class="btn btn-primary">Play</button>
       </div>
     </transition>
 
@@ -65,15 +65,17 @@ export default {
     CheckForPlayerProfile () {
       if (!localStorage.UserID) {
         this.showCreateProfileForm = true
-        this.$eventHub.$emit('NoProfileFound');
       } else {
         this.$eventHub.$emit('ProfileFound');
-        return true
       }
     },
 
+    Play() {
+      this.$eventHub.$emit('ProfileCreated');
+      this.profileCreatedSuccessfully = false
+    },
+
     GoToMainMenu () {
-      this.$eventHub.$emit('ProfileCreated')
       this.showCreateProfileForm = false
     },
 
@@ -89,10 +91,6 @@ export default {
         .then((response) => {
           this.showCreateProfileForm = !this.showCreateProfileForm
           localStorage.UserID = response.data.id
-          localStorage.Username = this.Username
-          localStorage.Credits = 500
-          localStorage.Wins = 0
-          localStorage.GamesPlayed = 0
         })
         .catch((error) => {
           this.profileError = 'username is already in use!'

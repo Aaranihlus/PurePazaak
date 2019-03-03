@@ -92,16 +92,14 @@ html, body {
   border-bottom: 1px solid grey;
   background-color:rgba(0, 0, 0, 1);
   padding-right: 4%;
-  margin-bottom: 5px;
   display: flex;
   flex-direction: row-reverse;
-  align-items: stretch;
+  align-items: center;
 }
 
 .profile-panel-item {
-  margin-left: 2%;
-  flex-basis: auto;
-  align-self: baseline;
+  margin-left: 1.5vw;
+  align-self: center;
 }
 
 @font-face {
@@ -112,4 +110,9 @@ html, body {
 h1, h2, h3, h4, h5, h6, p, span, a, html, body, div {
   font-family: 'StarWars';
   color: $yellow;
+}
+
+p {
+  margin-top: inherit;
+  margin-bottom: inherit;
 }

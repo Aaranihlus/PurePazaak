@@ -35,6 +35,6 @@ class PlayerStand implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('player.stand.game.' . $this->game_id);
+        return new PrivateChannel('game.event.'.$this->game_id);
     }
 }

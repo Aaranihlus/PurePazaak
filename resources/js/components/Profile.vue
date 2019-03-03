@@ -1,20 +1,10 @@
 <template>
   <div class="profile-panel" v-show="ShowProfile">
-    <div class="profile-panel-item">
-      {{ this.Username }}
-    </div>
-    <div class="profile-panel-item interactive" title="Deck Builder" v-on:click="showDeckBuilder()">
-      <i class="fab fa-stack-overflow"></i> Deck
-    </div>
-    <div class="profile-panel-item" title="Total Games Played">
-      <i class="far fa-play-circle"></i> {{ this.GamesPlayed }}
-    </div>
-    <div class="profile-panel-item" title="Total Games Won">
-      <i class="fas fa-trophy"></i> {{ this.Wins }}
-    </div>
-    <div class="profile-panel-item" title="Credit Balance">
-      <img src="/images/credit.png" style="width:15%;" class="img-fluid">{{ this.Credits }}
-    </div>
+      <p class="profile-panel-item">{{ this.Username }}</p>
+      <p class="profile-panel-item interactive" v-on:click="showDeckBuilder()"><i class="fab fa-stack-overflow"></i> Deck</p>
+      <p class="profile-panel-item"><i class="far fa-play-circle"></i> {{ this.GamesPlayed }}</p>
+      <p class="profile-panel-item"><i class="fas fa-trophy"></i> {{ this.Wins }}</p>
+      <p class="profile-panel-item"><span><img src="/images/credit.png" style="width:1.4vw;" class="img-fluid"></span>{{ this.Credits }}</p>
   </div>
 </template>
 
@@ -37,10 +27,10 @@ export default {
     this.GetPlayerProfile()
 
     //If a player profile is found, get the players data from the database
-    this.$eventHub.$on('ProfileFound', this.GetPlayerProfile())
+    this.$eventHub.$on('ProfileFound', this.GetPlayerProfile);
 
     //When a new profile is created, get the players data from the database
-    this.$eventHub.$on('ProfileCreated', this.GetPlayerProfile())
+    this.$eventHub.$on('ProfileCreated', this.GetPlayerProfile);
   },
 
   methods: {
@@ -50,18 +40,15 @@ export default {
     },
 
     GetPlayerProfile () {
-      if (localStorage.UserID) {
-        this.UserID = localStorage.UserID
-        this.Username = localStorage.Username
-        this.Credits = localStorage.Credits
-        this.Wins = localStorage.Wins
-        this.GamesPlayed = localStorage.GamesPlayed
-        this.ShowProfile = true
-
+      if(localStorage.UserID){
         axios.get('/user/data/' + localStorage.UserID).then((response) => {
-          //console.log('User Data:')
-          //console.log(response)
-        })
+          this.UserID = response.data.id
+          this.Username = response.data.username
+          this.Credits = response.data.credits
+          this.Wins = response.data.wins
+          this.GamesPlayed = response.data.games_played
+          this.ShowProfile = true
+        });
       }
     }
 

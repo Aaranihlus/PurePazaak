@@ -31,7 +31,7 @@
           <a href="/games"><h3>Join Game</h3></a>
           <p>Join another players public game</p>
         </div>
-        <p style="cursor: pointer;" v-on:click="versusChosen = false, showGameModes = true"><i class="fas fa-angle-left"></i> Back</p>
+        <h4 style="cursor: pointer;" v-on:click="versusChosen = false, showGameModes = true"><i class="fas fa-angle-left"></i> Back</h4>
       </div>
     </transition>
 
@@ -66,7 +66,7 @@ export default {
 
   data() {
     return {
-      showGameModes: true,
+      showGameModes: false,
       versusChosen: false,
       createGameActive: false,
       gameWager: 0
@@ -75,25 +75,20 @@ export default {
 
   created() {
     this.$eventHub.$on('NoProfileFound', this.ChooseGameMode)
-
     this.$eventHub.$on('showDeckBuilder', this.HideBoth);
-
     this.$eventHub.$on('BuilderClosed', this.BackToGameModes);
-
-    this.$eventHub.$on('ProfileFound', () => {
-      this.showGameModes = true
-    })
-
-    this.$eventHub.$on('ProfileCreated', () => {
-      this.showGameModes = true
-    })
-
+    this.$eventHub.$on('ProfileFound', this.BackToGameModes);
+    this.$eventHub.$on('ProfileCreated', this.BackToGameModes);
   },
 
   methods: {
 
     ChooseGameMode() {
       this.showGameModes = false
+    },
+
+    ShowGameModes() {
+      this.showGameModes = true
     },
 
     CreateNewGame() {

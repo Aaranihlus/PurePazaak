@@ -57226,34 +57226,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      showGameModes: true,
+      showGameModes: false,
       versusChosen: false,
       createGameActive: false,
       gameWager: 0
     };
   },
   created: function created() {
-    var _this = this;
-
     this.$eventHub.$on('NoProfileFound', this.ChooseGameMode);
-
     this.$eventHub.$on('showDeckBuilder', this.HideBoth);
-
     this.$eventHub.$on('BuilderClosed', this.BackToGameModes);
-
-    this.$eventHub.$on('ProfileFound', function () {
-      _this.showGameModes = true;
-    });
-
-    this.$eventHub.$on('ProfileCreated', function () {
-      _this.showGameModes = true;
-    });
+    this.$eventHub.$on('ProfileFound', this.BackToGameModes);
+    this.$eventHub.$on('ProfileCreated', this.BackToGameModes);
   },
 
 
   methods: {
     ChooseGameMode: function ChooseGameMode() {
       this.showGameModes = false;
+    },
+    ShowGameModes: function ShowGameModes() {
+      this.showGameModes = true;
     },
     CreateNewGame: function CreateNewGame() {
       axios.post('/game', {
@@ -57416,7 +57409,7 @@ var render = function() {
               ]),
               _vm._v(" "),
               _c(
-                "p",
+                "h4",
                 {
                   staticStyle: { cursor: "pointer" },
                   on: {
@@ -57673,14 +57666,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     CheckForPlayerProfile: function CheckForPlayerProfile() {
       if (!localStorage.UserID) {
         this.showCreateProfileForm = true;
-        this.$eventHub.$emit('NoProfileFound');
       } else {
         this.$eventHub.$emit('ProfileFound');
-        return true;
       }
     },
-    GoToMainMenu: function GoToMainMenu() {
+    Play: function Play() {
       this.$eventHub.$emit('ProfileCreated');
+      this.profileCreatedSuccessfully = false;
+    },
+    GoToMainMenu: function GoToMainMenu() {
       this.showCreateProfileForm = false;
     },
     CreatePlayerProfile: function CreatePlayerProfile() {
@@ -57696,10 +57690,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }).then(function (response) {
           _this.showCreateProfileForm = !_this.showCreateProfileForm;
           localStorage.UserID = response.data.id;
-          localStorage.Username = _this.Username;
-          localStorage.Credits = 500;
-          localStorage.Wins = 0;
-          localStorage.GamesPlayed = 0;
         }).catch(function (error) {
           _this.profileError = 'username is already in use!';
         });
@@ -57915,7 +57905,7 @@ var render = function() {
                   staticClass: "btn btn-primary",
                   on: {
                     click: function($event) {
-                      _vm.profileCreatedSuccessfully = false
+                      _vm.Play()
                     }
                   }
                 },
@@ -58002,16 +57992,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -58029,10 +58009,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     this.GetPlayerProfile();
 
     //If a player profile is found, get the players data from the database
-    this.$eventHub.$on('ProfileFound', this.GetPlayerProfile());
+    this.$eventHub.$on('ProfileFound', this.GetPlayerProfile);
 
     //When a new profile is created, get the players data from the database
-    this.$eventHub.$on('ProfileCreated', this.GetPlayerProfile());
+    this.$eventHub.$on('ProfileCreated', this.GetPlayerProfile);
   },
 
 
@@ -58041,17 +58021,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.$eventHub.$emit('showDeckBuilder');
     },
     GetPlayerProfile: function GetPlayerProfile() {
-      if (localStorage.UserID) {
-        this.UserID = localStorage.UserID;
-        this.Username = localStorage.Username;
-        this.Credits = localStorage.Credits;
-        this.Wins = localStorage.Wins;
-        this.GamesPlayed = localStorage.GamesPlayed;
-        this.ShowProfile = true;
+      var _this = this;
 
+      if (localStorage.UserID) {
         axios.get('/user/data/' + localStorage.UserID).then(function (response) {
-          //console.log('User Data:')
-          //console.log(response)
+          _this.UserID = response.data.id;
+          _this.Username = response.data.username;
+          _this.Credits = response.data.credits;
+          _this.Wins = response.data.wins;
+          _this.GamesPlayed = response.data.games_played;
+          _this.ShowProfile = true;
         });
       }
     }
@@ -58081,67 +58060,54 @@ var render = function() {
       staticClass: "profile-panel"
     },
     [
-      _c("div", { staticClass: "profile-panel-item" }, [
-        _vm._v("\n    " + _vm._s(this.Username) + "\n  ")
+      _c("p", { staticClass: "profile-panel-item" }, [
+        _vm._v(_vm._s(this.Username))
       ]),
       _vm._v(" "),
       _c(
-        "div",
+        "p",
         {
           staticClass: "profile-panel-item interactive",
-          attrs: { title: "Deck Builder" },
           on: {
             click: function($event) {
               _vm.showDeckBuilder()
             }
           }
         },
-        [_c("i", { staticClass: "fab fa-stack-overflow" }), _vm._v(" Deck\n  ")]
+        [_c("i", { staticClass: "fab fa-stack-overflow" }), _vm._v(" Deck")]
       ),
       _vm._v(" "),
-      _c(
-        "div",
-        {
-          staticClass: "profile-panel-item",
-          attrs: { title: "Total Games Played" }
-        },
-        [
-          _c("i", { staticClass: "far fa-play-circle" }),
-          _vm._v(" " + _vm._s(this.GamesPlayed) + "\n  ")
-        ]
-      ),
+      _c("p", { staticClass: "profile-panel-item" }, [
+        _c("i", { staticClass: "far fa-play-circle" }),
+        _vm._v(" " + _vm._s(this.GamesPlayed))
+      ]),
       _vm._v(" "),
-      _c(
-        "div",
-        {
-          staticClass: "profile-panel-item",
-          attrs: { title: "Total Games Won" }
-        },
-        [
-          _c("i", { staticClass: "fas fa-trophy" }),
-          _vm._v(" " + _vm._s(this.Wins) + "\n  ")
-        ]
-      ),
+      _c("p", { staticClass: "profile-panel-item" }, [
+        _c("i", { staticClass: "fas fa-trophy" }),
+        _vm._v(" " + _vm._s(this.Wins))
+      ]),
       _vm._v(" "),
-      _c(
-        "div",
-        {
-          staticClass: "profile-panel-item",
-          attrs: { title: "Credit Balance" }
-        },
-        [
-          _c("img", {
-            staticClass: "img-fluid",
-            staticStyle: { width: "15%" },
-            attrs: { src: "/images/credit.png" }
-          }),
-          _vm._v(_vm._s(this.Credits) + "\n  ")
-        ]
-      )
+      _c("p", { staticClass: "profile-panel-item" }, [
+        _vm._m(0),
+        _vm._v(_vm._s(this.Credits))
+      ])
     ]
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [
+      _c("img", {
+        staticClass: "img-fluid",
+        staticStyle: { width: "1.4vw" },
+        attrs: { src: "/images/credit.png" }
+      })
+    ])
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -58355,7 +58321,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     // Get Game Data
     axios.get('/game/data/' + this.gameID).then(function (response) {
       _this.gameData = response.data;
-
       // The creator of the game always joins first, so we will grab their data and assign it to player 1
       axios.get('/user/data/' + _this.gameData.creator_id).then(function (response) {
         _this.AddPlayer(1, response);
@@ -58368,8 +58333,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     });
 
     // An opponent_id will not be available as soon as the game starts, so the creator of the game must listen for another player joining
-    window.Echo.private('join.game.' + this.gameID).listen('PlayerJoinedGame', function (e) {
-      console.log('Player is joining the game!');
+    window.Echo.private('game.event.' + this.gameID).listen('PlayerJoinedGame', function (e) {
       // The player that joins is assigned to player 2
       axios.get('/user/data/' + e.opponent.id).then(function (response) {
         _this.AddPlayer(2, response);
@@ -58378,21 +58342,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       });
     });
 
-    window.Echo.private('player.startgame.game.' + this.gameID).listen('StartGame', function (e) {
-      console.log('Game is starting!');
+    window.Echo.private('game.event.' + this.gameID).listen('StartGame', function (e) {
       _this.DealCardToPlayer(1, e.random_dealer_card);
       _this.gameStarted = true;
       _this.ShowReadyStatus = false;
     });
 
-    window.Echo.private('player.ready.game.' + this.gameID).listen('ReadyUp', function (e) {
-      console.log('Player ' + e.player_index + ' is ready!');
+    window.Echo.private('game.event.' + this.gameID).listen('ReadyUp', function (e) {
       _this.MarkAsReady(e);
     });
 
     //When the current player ends their turn, make the other players turn begin, and give them the random card
-    window.Echo.private('player.endturn.game.' + this.gameID).listen('PlayerEndTurn', function (e) {
-
+    window.Echo.private('game.event.' + this.gameID).listen('PlayerEndTurn', function (e) {
       if (_this.currentPlayerTurn == 1) {
         _this.currentPlayerTurn = 2;
         _this.dealToPlayer = 2;
@@ -58400,39 +58361,29 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         _this.currentPlayerTurn = 1;
         _this.dealToPlayer = 1;
       }
-
       _this.DealCardToPlayer(_this.dealToPlayer, e.random_dealer_card);
     });
 
-    window.Echo.private('player.forfeit.game.' + this.gameID).listen('PlayerForfeit', function (e) {
-      console.log(e);
-    });
+    window.Echo.private('game.event.' + this.gameID).listen('PlayerForfeit', function (e) {});
 
-    window.Echo.private('player.playcard.game.' + this.gameID).listen('PlayerPlayCard', function (e) {
+    window.Echo.private('game.event.' + this.gameID).listen('PlayerPlayCard', function (e) {
       _this.PlaySideCard(e.data.card, e.data.index, e.data.playerNumber);
     });
 
-    window.Echo.private('player.stand.game.' + this.gameID).listen('PlayerStand', function (e) {
-      console.log(e);
-    });
+    window.Echo.private('game.event.' + this.gameID).listen('PlayerStand', function (e) {});
   },
 
 
   methods: {
     ReadyUp: function ReadyUp(player_index) {
-      console.log(player_index);
       axios.post('/game/ready/' + this.gameID, {
         game_id: this.gameID,
         player_index: player_index
-      }).then(function (response) {
-        console.log(response);
       });
     },
     MarkAsReady: function MarkAsReady(data) {
       this.players[data.player_index].ready = true;
-
       if (this.myPlayerIndex == 1 && this.players[1].ready == true && this.players[2].ready == true) {
-        console.log('call the start game method');
         this.StartGame();
       }
     },
@@ -58442,8 +58393,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         // Make a request to the server to serve the first card, starting the game
         axios.post('/game/start/' + this.gameID, {
           game_id: this.gameID
-        }).then(function (response) {
-          console.log(response);
         });
       }
     },
@@ -58453,8 +58402,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         user_id: localStorage.UserID,
         game_id: this.gameID,
         player_index: this.myPlayerIndex
-      }).then(function (response) {
-        console.log(response);
       });
     },
     Stand: function Stand() {
@@ -58462,8 +58409,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         username: localStorage.Username,
         user_id: localStorage.UserID,
         game_id: this.gameID
-      }).then(function (response) {
-        console.log(response);
       });
     },
     Forfeit: function Forfeit() {
@@ -58471,8 +58416,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         username: localStorage.Username,
         user_id: localStorage.UserID,
         game_id: this.gameID
-      }).then(function (response) {
-        console.log(response);
       });
     },
     AddPlayer: function AddPlayer(PlayerNumber, Data) {
@@ -58508,25 +58451,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     PlaySideCard: function PlaySideCard(card, index, playerNumber) {
       this.players[playerNumber].num_cards_in_field += 1;
-
       if (this.players[playerNumber].side_deck[index] == undefined) {
-
         window.$('#p' + playerNumber + 'c' + this.players[playerNumber].num_cards_in_field).append('<img class="card-image" src="' + card.CardImage + '">');
       } else {
-
         window.$('#p' + playerNumber + 'c' + this.players[playerNumber].num_cards_in_field).append('<img class="card-image" src="' + this.players[playerNumber].side_deck[index].CardImage + '">');
-
         axios.post('/game/' + this.gameID + '/playcard', {
           username: localStorage.Username,
           user_id: localStorage.UserID,
           game_id: this.gameID,
           playerNumber: playerNumber,
           card: card
-        }).then(function (response) {
-          console.log(response);
         });
       }
-
       this.players[playerNumber].side_deck.splice(index, 1);
     },
     UpdatePlayerScore: function UpdatePlayerScore() {

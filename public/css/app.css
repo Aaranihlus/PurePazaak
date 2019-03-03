@@ -10571,7 +10571,6 @@ body {
   border-bottom: 1px solid grey;
   background-color: black;
   padding-right: 4%;
-  margin-bottom: 5px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -10579,17 +10578,15 @@ body {
   -webkit-box-direction: reverse;
       -ms-flex-direction: row-reverse;
           flex-direction: row-reverse;
-  -webkit-box-align: stretch;
-      -ms-flex-align: stretch;
-          align-items: stretch;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 
 .profile-panel-item {
-  margin-left: 2%;
-  -ms-flex-preferred-size: auto;
-      flex-basis: auto;
-  -ms-flex-item-align: baseline;
-      align-self: baseline;
+  margin-left: 1.5vw;
+  -ms-flex-item-align: center;
+      align-self: center;
 }
 
 @font-face {
@@ -10611,5 +10608,10 @@ body,
 div {
   font-family: 'StarWars';
   color: #ffd60c;
+}
+
+p {
+  margin-top: inherit;
+  margin-bottom: inherit;
 }
 

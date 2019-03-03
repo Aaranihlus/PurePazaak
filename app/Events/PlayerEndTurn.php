@@ -39,6 +39,6 @@ class PlayerEndTurn implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('player.endturn.game.' . $this->game_id);
+        return new PrivateChannel('game.event.'.$this->game_id);
     }
 }
