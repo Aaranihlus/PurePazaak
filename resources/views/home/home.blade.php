@@ -2,7 +2,7 @@
 
 @section('content')
 
-<game-mode></game-mode>
+<game-menu></game-menu>
 
 <deck-builder></deck-builder>
 

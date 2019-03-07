@@ -15,6 +15,7 @@ use App\Events\PlayerForfeit;
 use App\Events\PlayerLeftGame;
 use App\Events\StartGame;
 use App\Events\ReadyUp;
+use App\Events\GameIsFull;
 
 class GameController extends Controller
 {
@@ -57,11 +58,19 @@ class GameController extends Controller
     public function join (Request $request) {
       // Get game record and update opponent id
       $game = Game::where('id', $request->game_id)->first();
+
+      if(isset($game->opponent_id)){
+        return response()->json("This Game is Full");
+      }
+
       $game->opponent_id = $request->user_id;
       $game->status = "active";
       $game->save();
       // Get the data for the user that has joined the game
       $opponent = User::where('id', $request->user_id)->first();
+
+      GameIsFull::dispatch($game->id);
+
       // Dispatch a player joined game event with the data of the user and the game id
       PlayerJoinedGame::dispatch($opponent, $game->id);
       return response()->json('game/' . $game->id);

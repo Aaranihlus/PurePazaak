@@ -17,7 +17,7 @@ window.Vue = require('vue');
 * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
 */
 
-Vue.component('game-mode', require('./components/GameMode.vue'));
+Vue.component('game-menu', require('./components/GameMenu.vue'));
 Vue.component('create-profile', require('./components/CreateProfile.vue'));
 Vue.component('profile', require('./components/Profile.vue'));
 Vue.component('game', require('./components/Game.vue'));
@@ -43,12 +43,6 @@ Vue.component('leaderboard', require('./components/Leaderboard.vue'));
 Vue.prototype.$eventHub = new Vue();
 
 const app = new Vue({
-  el: '#app',
-
-  created() {
-    var main_audio = new Audio('/audio/cantina_tune.mp3');
-    main_audio.volume = 0.1;
-    main_audio.play();
-  }
+  el: '#app'
 
 });

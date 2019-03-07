@@ -28,6 +28,10 @@ export default {
       this.openGames.push(e.game)
     });
 
+    window.Echo.channel('games').listen('GameIsFull', e => {
+      console.log(e)
+    });
+
     this.$eventHub.$on('OpenGameList', this.ShowGameList);
   },
 
