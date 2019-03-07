@@ -10480,6 +10480,16 @@ a.text-dark:focus {
   }
 }
 
+.list-group-item {
+  background-color: black;
+  border: 1px solid white;
+}
+
+.list-group {
+  border: 1px solid white;
+  border-radius: 6px;
+}
+
 html,
 body {
   color: #636b6f;
@@ -10487,9 +10497,11 @@ body {
   height: 100vh;
   margin: 0;
   overflow-y: hidden;
-  background: url("/images/bg.png");
+  background: url("/images/bg-min.png");
   background-attachment: fixed;
   background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
 }
 
 .flex {
@@ -10527,9 +10539,6 @@ body {
   max-width: 5.5vw;
   min-width: 5.5vw;
   margin: 1%;
-  background-attachment: center;
-  background-repeat: no-repeat;
-  background-size: cover;
 }
 
 .set-not-won {
@@ -10563,10 +10572,12 @@ body {
 .game-mode-panel {
   border: 2px solid white;
   border-radius: 8px;
-  background-color: black;
   text-align: center;
   min-height: 25vh;
   padding: 4%;
+  background-attachment: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .profile-panel {
@@ -10589,6 +10600,7 @@ body {
   margin-left: 1.5vw;
   -ms-flex-item-align: center;
       align-self: center;
+  margin-top: 0;
 }
 
 @font-face {
@@ -10613,7 +10625,7 @@ div {
 }
 
 p {
-  margin-top: inherit;
+  margin-top: 5px;
   margin-bottom: inherit;
 }
 

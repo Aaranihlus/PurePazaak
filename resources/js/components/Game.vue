@@ -42,13 +42,14 @@
 
       <div class="col-2">
 
+        <div class="Waiting" style="display: flex; align-items: center; justify-content: center; flex-direction: column;" v-show="this.waitingForPlayers">
+          <h2>Waiting for opponent</h2>
+          <i class="fas fa-spinner fa-spin fa-4x"></i>
+        </div>
+
         <div class="ScoreCounter" v-show="this.gameStarted">
           <h2>Current Set</h2>
           <h3>{{ currentSet }}</h3>
-        </div>
-
-        <div class="Waiting" v-show="this.waitingForPlayers">
-          <h2>Waiting for opponent</h2>
         </div>
 
         <div class="ReadyStatus" v-show="this.ShowReadyStatus">
@@ -294,7 +295,9 @@ export default {
     },
 
     PlaySideCard(card, index, playerNumber) {
+
       this.players[playerNumber].num_cards_in_field += 1
+
       if( this.players[playerNumber].side_deck[index] == undefined ) {
         window.$('#p' + playerNumber + 'c' + this.players[playerNumber].num_cards_in_field).append('<img class="card-image" src="' + card.CardImage + '">')
       } else {
@@ -307,6 +310,15 @@ export default {
           card: card
         });
       }
+
+      if(card.CardID.charAt(0).toString() == "+"){
+        this.players[playerNumber].set_score += parseInt(card.CardID.charAt(1));
+      }
+
+      if(card.CardID.charAt(0).toString() == "-"){
+        this.players[playerNumber].set_score -= parseInt(card.CardID.charAt(1));
+      }
+
       this.players[playerNumber].side_deck.splice(index, 1)
     },
 

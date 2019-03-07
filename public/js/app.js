@@ -13990,7 +13990,7 @@ module.exports = Cancel;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(13);
-module.exports = __webpack_require__(63);
+module.exports = __webpack_require__(66);
 
 
 /***/ }),
@@ -14023,7 +14023,8 @@ Vue.component('game', __webpack_require__(51));
 Vue.component('deck-builder', __webpack_require__(54));
 Vue.component('game-list', __webpack_require__(57));
 Vue.component('game-listing', __webpack_require__(60));
-Vue.component('versus-menu', __webpack_require__(87));
+Vue.component('versus-menu', __webpack_require__(63));
+Vue.component('leaderboard', __webpack_require__(90));
 
 // const files = require.context('./', true, /\.vue$/i)
 
@@ -14041,7 +14042,13 @@ Vue.component('versus-menu', __webpack_require__(87));
 Vue.prototype.$eventHub = new Vue();
 
 var app = new Vue({
-  el: '#app'
+  el: '#app',
+
+  created: function created() {
+    var main_audio = new Audio('/audio/cantina_tune.mp3');
+    main_audio.volume = 0.1;
+    main_audio.play();
+  }
 });
 
 /***/ }),
@@ -57184,6 +57191,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -57200,16 +57226,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     this.$eventHub.$on('BuilderClosed', this.BackToGameModes);
     this.$eventHub.$on('ProfileFound', this.BackToGameModes);
     this.$eventHub.$on('ProfileCreated', this.BackToGameModes);
+    this.$eventHub.$on('VersusClosed', this.ShowGameModes);
   },
 
 
   methods: {
-    ShowVersus: function ShowVersus() {
+    showLeaderboards: function showLeaderboards() {
       this.showGameModes = false;
-      this.$eventHub.$emit('VersusChosen');
+      this.$eventHub.$emit('showLeadboards');
     },
-    ChooseGameMode: function ChooseGameMode() {
-      this.showGameModes = false;
+    showDeckBuilder: function showDeckBuilder() {
+      this.$eventHub.$emit('showDeckBuilder');
+    },
+    ShowVersus: function ShowVersus() {
+      this.$eventHub.$emit('VersusChosen');
     },
     ShowGameModes: function ShowGameModes() {
       this.showGameModes = true;
@@ -57282,16 +57312,27 @@ var render = function() {
                 }
               ],
               staticClass: "row",
-              staticStyle: { "margin-top": "25vh" }
+              staticStyle: { "margin-top": "20vh" }
             },
             [
-              _c("div", { staticClass: "col-5 game-mode-panel" }, [
-                _c("i", { staticClass: "fas fa-user fa-5x" }),
-                _vm._v(" "),
-                _c("h2", [_vm._v("Practice")]),
-                _vm._v(" "),
-                _c("p", [_vm._v("Play a practice game against the computer")])
-              ]),
+              _c(
+                "div",
+                {
+                  staticClass: "col-5 game-mode-panel",
+                  staticStyle: {
+                    background:
+                      "linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ), url('/images/alpha-min.jpg')",
+                    "background-size": "cover"
+                  }
+                },
+                [
+                  _c("i", { staticClass: "fas fa-user fa-5x" }),
+                  _vm._v(" "),
+                  _c("h3", [_vm._v("Practice")]),
+                  _vm._v(" "),
+                  _c("p", [_vm._v("Play a practice game against the computer")])
+                ]
+              ),
               _vm._v(" "),
               _c("div", { staticClass: "col-2" }),
               _vm._v(" "),
@@ -57299,9 +57340,14 @@ var render = function() {
                 "div",
                 {
                   staticClass: "col-5 game-mode-panel interactive",
+                  staticStyle: {
+                    background:
+                      "linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ), url('/images/berta-min.jpg')",
+                    "background-size": "cover"
+                  },
                   on: {
                     click: function($event) {
-                      _vm.ShowVersus()
+                      _vm.showGameModes = false
                     }
                   }
                 },
@@ -57311,6 +57357,56 @@ var render = function() {
                   _c("h3", [_vm._v("versus")]),
                   _vm._v(" "),
                   _c("p", [_vm._v("Go head-to-head with other players")])
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "col-5 game-mode-panel interactive mt-4",
+                  staticStyle: {
+                    background:
+                      "linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ), url('/images/ceaser-min.jpg')",
+                    "background-size": "cover"
+                  },
+                  on: {
+                    click: function($event) {
+                      _vm.showLeaderboards()
+                    }
+                  }
+                },
+                [
+                  _c("i", { staticClass: "fas fa-poll fa-5x" }),
+                  _vm._v(" "),
+                  _c("h3", [_vm._v("Leaderboards")]),
+                  _vm._v(" "),
+                  _c("p", [_vm._v("See who fortune favours the most")])
+                ]
+              ),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-2" }),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "col-5 game-mode-panel interactive mt-4",
+                  staticStyle: {
+                    background:
+                      "linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ), url('/images/dora-min.png')",
+                    "background-size": "cover"
+                  },
+                  on: {
+                    click: function($event) {
+                      _vm.showDeckBuilder()
+                    }
+                  }
+                },
+                [
+                  _c("i", { staticClass: "fab fa-stack-overflow fa-5x" }),
+                  _vm._v(" "),
+                  _c("h3", [_vm._v("Deck Builder")]),
+                  _vm._v(" "),
+                  _c("p", [_vm._v("Build your Side Deck")])
                 ]
               )
             ]
@@ -57790,7 +57886,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -57804,9 +57899,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     };
   },
   created: function created() {
-    //When the profile component is loaded, we will get the players data from the database
-    this.GetPlayerProfile();
-
     //If a player profile is found, get the players data from the database
     this.$eventHub.$on('ProfileFound', this.GetPlayerProfile);
 
@@ -57816,20 +57908,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
   methods: {
-    showDeckBuilder: function showDeckBuilder() {
-      this.$eventHub.$emit('showDeckBuilder');
-    },
     GetPlayerProfile: function GetPlayerProfile() {
       var _this = this;
 
       if (localStorage.UserID) {
+        this.ShowProfile = true;
         axios.get('/user/data/' + localStorage.UserID).then(function (response) {
           _this.UserID = response.data.id;
           _this.Username = response.data.username;
           _this.Credits = response.data.credits;
           _this.Wins = response.data.wins;
           _this.GamesPlayed = response.data.games_played;
-          _this.ShowProfile = true;
         });
       }
     }
@@ -57862,19 +57951,6 @@ var render = function() {
       _c("p", { staticClass: "profile-panel-item" }, [
         _vm._v(_vm._s(this.Username))
       ]),
-      _vm._v(" "),
-      _c(
-        "p",
-        {
-          staticClass: "profile-panel-item interactive",
-          on: {
-            click: function($event) {
-              _vm.showDeckBuilder()
-            }
-          }
-        },
-        [_c("i", { staticClass: "fab fa-stack-overflow" }), _vm._v(" Deck")]
-      ),
       _vm._v(" "),
       _c("p", { staticClass: "profile-panel-item" }, [
         _c("i", { staticClass: "far fa-play-circle" }),
@@ -57969,6 +58045,7 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
 //
 //
 //
@@ -58249,7 +58326,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.UpdatePlayerScore(playerNumber);
     },
     PlaySideCard: function PlaySideCard(card, index, playerNumber) {
+
       this.players[playerNumber].num_cards_in_field += 1;
+
       if (this.players[playerNumber].side_deck[index] == undefined) {
         window.$('#p' + playerNumber + 'c' + this.players[playerNumber].num_cards_in_field).append('<img class="card-image" src="' + card.CardImage + '">');
       } else {
@@ -58262,6 +58341,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           card: card
         });
       }
+
+      if (card.CardID.charAt(0).toString() == "+") {
+        this.players[playerNumber].set_score += parseInt(card.CardID.charAt(1));
+      }
+
+      if (card.CardID.charAt(0).toString() == "-") {
+        this.players[playerNumber].set_score -= parseInt(card.CardID.charAt(1));
+      }
+
       this.players[playerNumber].side_deck.splice(index, 1);
     },
     UpdatePlayerScore: function UpdatePlayerScore() {
@@ -58414,6 +58502,32 @@ var render = function() {
               {
                 name: "show",
                 rawName: "v-show",
+                value: this.waitingForPlayers,
+                expression: "this.waitingForPlayers"
+              }
+            ],
+            staticClass: "Waiting",
+            staticStyle: {
+              display: "flex",
+              "align-items": "center",
+              "justify-content": "center",
+              "flex-direction": "column"
+            }
+          },
+          [
+            _c("h2", [_vm._v("Waiting for opponent")]),
+            _vm._v(" "),
+            _c("i", { staticClass: "fas fa-spinner fa-spin fa-4x" })
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
                 value: this.gameStarted,
                 expression: "this.gameStarted"
               }
@@ -58425,22 +58539,6 @@ var render = function() {
             _vm._v(" "),
             _c("h3", [_vm._v(_vm._s(_vm.currentSet))])
           ]
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          {
-            directives: [
-              {
-                name: "show",
-                rawName: "v-show",
-                value: this.waitingForPlayers,
-                expression: "this.waitingForPlayers"
-              }
-            ],
-            staticClass: "Waiting"
-          },
-          [_c("h2", [_vm._v("Waiting for opponent")])]
         ),
         _vm._v(" "),
         _c(
@@ -59140,33 +59238,44 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    created: function created() {
-        var _this = this;
+  data: function data() {
+    return {
+      openGames: [],
+      showGameList: false
+    };
+  },
+  created: function created() {
+    var _this = this;
 
-        this.GetAllOpenGames();
+    this.GetAllOpenGames();
 
-        window.Echo.channel('games').listen('NewGameCreated', function (e) {
-            _this.openGames.push(e.game);
-        });
+    window.Echo.channel('games').listen('NewGameCreated', function (e) {
+      _this.openGames.push(e.game);
+    });
+
+    this.$eventHub.$on('OpenGameList', this.ShowGameList);
+  },
+
+
+  methods: {
+    ShowGameList: function ShowGameList() {
+      this.showGameList = true;
     },
-    data: function data() {
-        return {
-            openGames: []
-        };
-    },
+    GetAllOpenGames: function GetAllOpenGames() {
+      var _this2 = this;
 
-
-    methods: {
-        GetAllOpenGames: function GetAllOpenGames() {
-            var _this2 = this;
-
-            axios.get('/games/all').then(function (response) {
-                return _this2.openGames = response.data;
-            });
-        }
+      axios.get('/games/all').then(function (response) {
+        return _this2.openGames = response.data;
+      });
     }
+  }
+
 });
 
 /***/ }),
@@ -59177,20 +59286,59 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
-    _c("h1", [_vm._v("open Games")]),
-    _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "row" },
-      _vm._l(_vm.openGames, function(game, index) {
-        return _c("game-listing", {
-          key: game.id,
-          attrs: { game: game, index: index }
-        })
-      })
-    )
-  ])
+  return _c(
+    "transition",
+    {
+      attrs: {
+        appear: "",
+        "enter-active-class": "animated bounceInRight",
+        "leave-active-class": "animated bounceOutLeft"
+      }
+    },
+    [
+      _c(
+        "div",
+        {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: _vm.showGameList,
+              expression: "showGameList"
+            }
+          ],
+          staticClass: "container"
+        },
+        [
+          _c("h1", [_vm._v("open Games")]),
+          _vm._v(" "),
+          _c(
+            "h4",
+            {
+              staticStyle: { cursor: "pointer" },
+              on: {
+                click: function($event) {
+                  _vm.showGameList = false
+                }
+              }
+            },
+            [_c("i", { staticClass: "fas fa-angle-left" }), _vm._v(" Back")]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "row" },
+            _vm._l(_vm.openGames, function(game, index) {
+              return _c("game-listing", {
+                key: game.id,
+                attrs: { game: game, index: index }
+              })
+            })
+          )
+        ]
+      )
+    ]
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -59270,6 +59418,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 
@@ -59319,32 +59468,38 @@ var render = function() {
           _c("p", [
             _vm._v("Game "),
             _c("i", { staticClass: "fas fa-hashtag" }),
-            _vm._v(
-              _vm._s(_vm.game.id) +
-                " " +
-                _vm._s(_vm.game.status) +
-                " Wager: " +
-                _vm._s(_vm.game.wager) +
-                " credit(s)"
-            )
-          ])
+            _vm._v(_vm._s(_vm.game.id) + " - " + _vm._s(_vm.game.status))
+          ]),
+          _vm._v(" "),
+          _c("p", [_vm._v("Wager: " + _vm._s(_vm.game.wager) + " credit(s)")])
         ]),
         _vm._v(" "),
-        _c("div", { staticClass: "col-2" }, [
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-primary",
-              staticStyle: { width: "100%" },
-              on: {
-                click: function($event) {
-                  _vm.JoinGame(_vm.game.id)
+        _c(
+          "div",
+          {
+            staticClass: "col-2",
+            staticStyle: {
+              display: "flex",
+              "justify-content": "center",
+              "align-items": "center"
+            }
+          },
+          [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-primary",
+                staticStyle: { width: "100%" },
+                on: {
+                  click: function($event) {
+                    _vm.JoinGame(_vm.game.id)
+                  }
                 }
-              }
-            },
-            [_vm._v("Join")]
-          )
-        ])
+              },
+              [_vm._v("Join")]
+            )
+          ]
+        )
       ]
     )
   ])
@@ -59361,43 +59516,14 @@ if (false) {
 
 /***/ }),
 /* 63 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 64 */,
-/* 65 */,
-/* 66 */,
-/* 67 */,
-/* 68 */,
-/* 69 */,
-/* 70 */,
-/* 71 */,
-/* 72 */,
-/* 73 */,
-/* 74 */,
-/* 75 */,
-/* 76 */,
-/* 77 */,
-/* 78 */,
-/* 79 */,
-/* 80 */,
-/* 81 */,
-/* 82 */,
-/* 83 */,
-/* 84 */,
-/* 85 */,
-/* 86 */,
-/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(88)
+var __vue_script__ = __webpack_require__(64)
 /* template */
-var __vue_template__ = __webpack_require__(89)
+var __vue_template__ = __webpack_require__(65)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -59436,13 +59562,11 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 88 */
+/* 64 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
 //
 //
 //
@@ -59499,9 +59623,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
   methods: {
+    ShowGameList: function ShowGameList() {
+      this.versusChosen = false;
+      this.$eventHub.$emit('OpenGameList');
+    },
     ShowVersus: function ShowVersus() {
-      console.log("show versus");
       this.versusChosen = true;
+    },
+    CloseVersus: function CloseVersus() {
+      this.$eventHub.$emit('VersusClosed');
     },
     CreateNewGame: function CreateNewGame() {
       axios.post('/game', {
@@ -59526,7 +59656,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 89 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -59544,8 +59674,7 @@ var render = function() {
             appear: "",
             "enter-active-class": "animated bounceInRight",
             "leave-active-class": "animated bounceOutLeft"
-          },
-          on: { "after-leave": function($event) {} }
+          }
         },
         [
           _c(
@@ -59586,9 +59715,17 @@ var render = function() {
               _c("div", { staticClass: "col-5 game-mode-panel interactive" }, [
                 _c("i", { staticClass: "fas fa-sign-in-alt fa-5x" }),
                 _vm._v(" "),
-                _c("a", { attrs: { href: "/games" } }, [
-                  _c("h3", [_vm._v("Join Game")])
-                ]),
+                _c(
+                  "h2",
+                  {
+                    on: {
+                      click: function($event) {
+                        _vm.ShowGameList()
+                      }
+                    }
+                  },
+                  [_vm._v("Join Game")]
+                ),
                 _vm._v(" "),
                 _c("p", [_vm._v("Join another players public game")])
               ]),
@@ -59599,7 +59736,7 @@ var render = function() {
                   staticStyle: { cursor: "pointer" },
                   on: {
                     click: function($event) {
-                      ;(_vm.versusChosen = false), (_vm.showGameModes = true)
+                      _vm.versusChosen = false
                     }
                   }
                 },
@@ -59650,30 +59787,38 @@ var render = function() {
                           ]
                         ),
                         _vm._v(" "),
-                        _c("div", { staticClass: "modal-body text-left" }, [
-                          _c("label", [_vm._v("Wager")]),
-                          _vm._v(" "),
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.gameWager,
-                                expression: "gameWager"
-                              }
-                            ],
-                            attrs: { type: "number" },
-                            domProps: { value: _vm.gameWager },
-                            on: {
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
+                        _c(
+                          "div",
+                          {
+                            staticClass: "modal-body text-left",
+                            staticStyle: { "background-color": "black" }
+                          },
+                          [
+                            _c("label", [_vm._v("Wager")]),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.gameWager,
+                                  expression: "gameWager"
                                 }
-                                _vm.gameWager = $event.target.value
+                              ],
+                              staticClass: "form-control",
+                              attrs: { type: "number" },
+                              domProps: { value: _vm.gameWager },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.gameWager = $event.target.value
+                                }
                               }
-                            }
-                          })
-                        ]),
+                            })
+                          ]
+                        ),
                         _vm._v(" "),
                         _c(
                           "div",
@@ -59707,7 +59852,7 @@ var render = function() {
                                   }
                                 }
                               },
-                              [_vm._v(" Accept ")]
+                              [_vm._v(" Create ")]
                             )
                           ]
                         )
@@ -59730,6 +59875,321 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-31926078", module.exports)
+  }
+}
+
+/***/ }),
+/* 66 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 67 */,
+/* 68 */,
+/* 69 */,
+/* 70 */,
+/* 71 */,
+/* 72 */,
+/* 73 */,
+/* 74 */,
+/* 75 */,
+/* 76 */,
+/* 77 */,
+/* 78 */,
+/* 79 */,
+/* 80 */,
+/* 81 */,
+/* 82 */,
+/* 83 */,
+/* 84 */,
+/* 85 */,
+/* 86 */,
+/* 87 */,
+/* 88 */,
+/* 89 */,
+/* 90 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(91)
+/* template */
+var __vue_template__ = __webpack_require__(92)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/Leaderboard.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-77e85be2", Component.options)
+  } else {
+    hotAPI.reload("data-v-77e85be2", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 91 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      leaderboardOpen: false,
+      mostCredits: [],
+      mostWins: [],
+      mostGamesPlayed: []
+    };
+  },
+  created: function created() {
+    var _this = this;
+
+    this.$eventHub.$on('showLeadboards', this.showLeadboard);
+
+    axios.get('/games/all').then(function (response) {
+      return _this.openGames = response.data;
+    });
+
+    axios.get('/user/leaderboard').then(function (response) {
+      _this.mostCredits = response.data.credits;
+      _this.mostWins = response.data.wins;
+      _this.mostGamesPlayed = response.data.games_played;
+    });
+  },
+
+
+  methods: {
+    showLeadboard: function showLeadboard() {
+      this.leaderboardOpen = true;
+    }
+  }
+
+});
+
+/***/ }),
+/* 92 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "transition",
+    {
+      attrs: {
+        appear: "",
+        "enter-active-class": "animated bounceInRight",
+        "leave-active-class": "animated bounceOutLeft"
+      },
+      on: { "after-leave": function($event) {} }
+    },
+    [
+      _c(
+        "div",
+        {
+          staticClass: "container-flex",
+          staticStyle: {
+            display: "flex",
+            "justify-content": "center",
+            "align-items": "center"
+          }
+        },
+        [
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.leaderboardOpen,
+                  expression: "leaderboardOpen"
+                }
+              ],
+              staticClass: "container text-center"
+            },
+            [
+              _c("h2", [_vm._v("leaderboards")]),
+              _vm._v(" "),
+              _c("br"),
+              _vm._v(" "),
+              _c("div", { staticClass: "row" }, [
+                _c("div", { staticClass: "col-4" }, [
+                  _c("h3", [_vm._v("Most Wins")]),
+                  _vm._v(" "),
+                  _c(
+                    "ul",
+                    { staticClass: "list-group" },
+                    _vm._l(_vm.mostWins, function(user, index) {
+                      return _c(
+                        "li",
+                        {
+                          staticClass: "list-group-item",
+                          class: { active: index === 0 }
+                        },
+                        [
+                          _c("i", { staticClass: "fas fa-hashtag" }),
+                          _vm._v(
+                            _vm._s(index) +
+                              " " +
+                              _vm._s(user.username) +
+                              " - " +
+                              _vm._s(user.wins) +
+                              " wins"
+                          )
+                        ]
+                      )
+                    })
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-4" }, [
+                  _c("h3", [_vm._v("Most Games Played")]),
+                  _vm._v(" "),
+                  _c(
+                    "ul",
+                    { staticClass: "list-group" },
+                    _vm._l(_vm.mostGamesPlayed, function(user, index) {
+                      return _c(
+                        "li",
+                        {
+                          staticClass: "list-group-item",
+                          class: { active: index === 0 }
+                        },
+                        [
+                          _c("i", { staticClass: "fas fa-hashtag" }),
+                          _vm._v(
+                            _vm._s(index) +
+                              " " +
+                              _vm._s(user.username) +
+                              " - " +
+                              _vm._s(user.games_played) +
+                              " games"
+                          )
+                        ]
+                      )
+                    })
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-4" }, [
+                  _c("h3", [_vm._v("Most Credits")]),
+                  _vm._v(" "),
+                  _c(
+                    "ul",
+                    { staticClass: "list-group" },
+                    _vm._l(_vm.mostCredits, function(user, index) {
+                      return _c(
+                        "li",
+                        {
+                          staticClass: "list-group-item",
+                          class: { active: index === 0 }
+                        },
+                        [
+                          _c("i", { staticClass: "fas fa-hashtag" }),
+                          _vm._v(
+                            _vm._s(index) +
+                              " " +
+                              _vm._s(user.username) +
+                              " - " +
+                              _vm._s(user.credits) +
+                              " credits"
+                          )
+                        ]
+                      )
+                    })
+                  )
+                ])
+              ])
+            ]
+          )
+        ]
+      )
+    ]
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-77e85be2", module.exports)
   }
 }
 

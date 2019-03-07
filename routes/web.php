@@ -8,6 +8,8 @@ Route::get('/', function () {
 Route::post('/user/store', 'UserController@store');
 // Retrieve data for a user
 Route::get('/user/data/{id}', 'UserController@data');
+// Retrieve leaderboard data user
+Route::get('/user/leaderboard', 'UserController@leaderboard');
 // Save User Side Deck
 Route::post('/user/update_sidedeck', 'UserController@save_deck');
 // Retrieve User Side Deck

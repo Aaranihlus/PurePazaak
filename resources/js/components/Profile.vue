@@ -1,7 +1,6 @@
 <template>
   <div class="profile-panel" v-show="ShowProfile">
       <p class="profile-panel-item">{{ this.Username }}</p>
-      <p class="profile-panel-item interactive" v-on:click="showDeckBuilder()"><i class="fab fa-stack-overflow"></i> Deck</p>
       <p class="profile-panel-item"><i class="far fa-play-circle"></i> {{ this.GamesPlayed }}</p>
       <p class="profile-panel-item"><i class="fas fa-trophy"></i> {{ this.Wins }}</p>
       <p class="profile-panel-item"><span><img src="/images/credit.png" style="width:1.4vw;" class="img-fluid"></span>{{ this.Credits }}</p>
@@ -23,9 +22,6 @@ export default {
   },
 
   created () {
-    //When the profile component is loaded, we will get the players data from the database
-    this.GetPlayerProfile()
-
     //If a player profile is found, get the players data from the database
     this.$eventHub.$on('ProfileFound', this.GetPlayerProfile);
 
@@ -35,19 +31,15 @@ export default {
 
   methods: {
 
-    showDeckBuilder () {
-      this.$eventHub.$emit('showDeckBuilder');
-    },
-
     GetPlayerProfile () {
       if(localStorage.UserID){
+        this.ShowProfile = true
         axios.get('/user/data/' + localStorage.UserID).then((response) => {
           this.UserID = response.data.id
           this.Username = response.data.username
           this.Credits = response.data.credits
           this.Wins = response.data.wins
           this.GamesPlayed = response.data.games_played
-          this.ShowProfile = true
         });
       }
     }

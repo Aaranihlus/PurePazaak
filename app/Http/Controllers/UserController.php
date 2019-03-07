@@ -25,6 +25,20 @@ class UserController extends Controller
       return response()->json($user);
     }
 
+    public function leaderboard(){
+
+      $mostCredits = User::orderBy('credits', 'desc')->limit(10)->get();
+      $mostWins = User::orderBy('games_played', 'desc')->limit(10)->get();
+      $mostGamesPlayed = User::orderBy('wins', 'desc')->limit(10)->get();
+
+      $data = [];
+      $data['credits'] = $mostCredits;
+      $data['games_played'] = $mostGamesPlayed;
+      $data['wins'] = $mostWins;
+
+      return $data;
+    }
+
     // Show the deck builder
     public function deck () {
       return view('user.deck');

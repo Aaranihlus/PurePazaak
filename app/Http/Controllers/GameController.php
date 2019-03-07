@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Game;
 use App\User;
+use Illuminate\Support\Facades\Auth;
 
 use App\Events\NewGameCreated;
 use App\Events\PlayerJoinedGame;
@@ -18,29 +19,26 @@ use App\Events\ReadyUp;
 class GameController extends Controller
 {
     public function show ($id) {
-      $game = Game::where('id', $id)->first();
 
+      $game = Game::where('id', $id)->first();
       return view('game.game', compact(['game']));
 
-      // If the user is authenticated and the opponent_id or creator_id do not equal the authenticated users id, redirect home
-      /*if ( (auth()->user()->id) AND ($game->creator_id == auth()->user()->id OR $game->opponent_id == auth()->user()->id) ) {
-        return view('game.game', compact(['game']));
-      } else {
-        return redirect('/');
+      /*if (Auth::id()) {
+        if (Auth::id() != $game->opponent_id OR Auth::id() != $game->creator_id) {
+          return redirect('/');
+        }
       }*/
+
     }
 
     public function readyUp (Request $request) {
       ReadyUp::dispatch($request);
     }
 
-
     public function startGame (Request $request) {
       $request['random_dealer_card'] = mt_rand(1,10);
       StartGame::dispatch($request);
     }
-
-
 
     public function index () {
       $games = Game::where('status', 'open')->get();
@@ -56,30 +54,18 @@ class GameController extends Controller
       return response()->json($game);
     }
 
-    /*public function leave (Request $request, $id) {
-      $game = Game::where('id', $id)->first();
-      $game->opponent_id = 0;
-      $game->status = "active";
-      $game->save();
-    }*/
-
     public function join (Request $request) {
-
       // Get game record and update opponent id
       $game = Game::where('id', $request->game_id)->first();
       $game->opponent_id = $request->user_id;
       $game->status = "active";
       $game->save();
-
       // Get the data for the user that has joined the game
       $opponent = User::where('id', $request->user_id)->first();
-
       // Dispatch a player joined game event with the data of the user and the game id
       PlayerJoinedGame::dispatch($opponent, $game->id);
-
       return response()->json('game/' . $game->id);
     }
-
 
     public function store (Request $request) {
       $game = Game::create([

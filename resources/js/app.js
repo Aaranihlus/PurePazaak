@@ -25,6 +25,7 @@ Vue.component('deck-builder', require('./components/DeckBuilder.vue'));
 Vue.component('game-list', require('./components/GameList.vue'));
 Vue.component('game-listing', require('./components/GameListing.vue'));
 Vue.component('versus-menu', require('./components/VersusMenu.vue'));
+Vue.component('leaderboard', require('./components/Leaderboard.vue'));
 
 // const files = require.context('./', true, /\.vue$/i)
 
@@ -42,5 +43,12 @@ Vue.component('versus-menu', require('./components/VersusMenu.vue'));
 Vue.prototype.$eventHub = new Vue();
 
 const app = new Vue({
-  el: '#app'
+  el: '#app',
+
+  created() {
+    var main_audio = new Audio('/audio/cantina_tune.mp3');
+    main_audio.volume = 0.1;
+    main_audio.play();
+  }
+
 });

@@ -10,4 +10,8 @@
 
 <versus-menu></versus-menu>
 
+<game-list></game-list>
+
+<leaderboard></leaderboard>
+
 @endsection('content')

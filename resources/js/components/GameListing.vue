@@ -3,9 +3,10 @@
 
     <div class="row" style="border:1px solid white; padding: 6px; background-color:black;">
       <div class="col-10">
-        <p>Game <i class="fas fa-hashtag"></i>{{ game.id }} {{ game.status }} Wager: {{ game.wager }} credit(s)</p>
+        <p>Game <i class="fas fa-hashtag"></i>{{ game.id }} - {{ game.status }}</p>
+        <p>Wager: {{ game.wager }} credit(s)</p>
       </div>
-      <div class="col-2">
+      <div class="col-2" style="display:flex; justify-content:center; align-items: center;">
         <button class="btn btn-primary" style="width:100%;" v-on:click="JoinGame(game.id)">Join</button>
       </div>
     </div>

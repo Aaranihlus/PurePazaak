@@ -1,7 +1,6 @@
 <template>
   <div class="container">
-
-    <transition appear enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-on:after-leave="">
+    <transition appear enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft">
       <div class="row" style="margin-top:25vh;" v-show="versusChosen">
         <div class="col-5 game-mode-panel interactive">
           <i class="fas fa-plus-square fa-5x"></i>
@@ -11,10 +10,10 @@
         <div class="col-2"></div>
         <div class="col-5 game-mode-panel interactive">
           <i class="fas fa-sign-in-alt fa-5x"></i>
-          <a href="/games"><h3>Join Game</h3></a>
+          <h2 v-on:click="ShowGameList()">Join Game</h2>
           <p>Join another players public game</p>
         </div>
-        <h4 style="cursor: pointer;" v-on:click="versusChosen = false, showGameModes = true"><i class="fas fa-angle-left"></i> Back</h4>
+        <h4 style="cursor: pointer;" v-on:click="versusChosen = false"><i class="fas fa-angle-left"></i> Back</h4>
       </div>
     </transition>
 
@@ -25,19 +24,18 @@
             <div class="modal-header" style="background-color:black;">
               <h4 class="modal-title">Create New Game</h4>
             </div>
-            <div class="modal-body text-left">
+            <div class="modal-body text-left" style="background-color:black;">
               <label>Wager</label>
-              <input type="number" v-model="gameWager">
+              <input class="form-control" type="number" v-model="gameWager">
             </div>
             <div class="modal-footer p-2" style="background-color:black;">
               <button type="button" class="btn btn-primary" v-on:click="CancelCreateGame()"> Cancel </button>
-              <button type="button" class="btn btn-primary" v-on:click="CreateNewGame()"> Accept </button>
+              <button type="button" class="btn btn-primary" v-on:click="CreateNewGame()"> Create </button>
             </div>
           </div>
         </div>
       </div>
     </transition>
-
   </div>
 </template>
 
@@ -58,9 +56,17 @@ export default {
 
   methods: {
 
+    ShowGameList() {
+      this.versusChosen = false;
+      this.$eventHub.$emit('OpenGameList');
+    },
+
     ShowVersus () {
-      console.log("show versus")
       this.versusChosen = true;
+    },
+
+    CloseVersus () {
+      this.$eventHub.$emit('VersusClosed');
     },
 
     CreateNewGame() {

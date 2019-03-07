@@ -10,6 +10,16 @@
 // Animate.css
 @import '~animate.css/animate.min.css';
 
+.list-group-item {
+  background-color: black;
+  border:1px solid white;
+}
+
+.list-group {
+  border:1px solid white;
+  border-radius: 6px;
+}
+
 
 
 html, body {
@@ -18,10 +28,13 @@ html, body {
     height: 100vh;
     margin: 0;
     overflow-y: hidden;
-    background: url('/images/bg.png');
+    background: url('/images/bg-min.png');
     background-attachment: fixed;
     background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
 }
+
 
 .flex {
   display:flex;
@@ -51,9 +64,6 @@ html, body {
   max-width: 5.5vw;
   min-width: 5.5vw;
   margin: 1%;
-  background-attachment: center;
-  background-repeat: no-repeat;
-  background-size: cover;
 }
 
 .set-not-won {
@@ -83,10 +93,12 @@ html, body {
 .game-mode-panel {
   border:2px solid white;
   border-radius: 8px;
-  background-color:rgba(0, 0, 0, 1);
   text-align: center;
   min-height: 25vh;
   padding: 4%;
+  background-attachment: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .profile-panel {
@@ -101,6 +113,7 @@ html, body {
 .profile-panel-item {
   margin-left: 1.5vw;
   align-self: center;
+  margin-top: 0;
 }
 
 @font-face {
@@ -114,6 +127,6 @@ h1, h2, h3, h4, h5, h6, p, span, a, html, body, div {
 }
 
 p {
-  margin-top: inherit;
+  margin-top: 5px;
   margin-bottom: inherit;
 }
