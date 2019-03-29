@@ -1,9 +1,9 @@
 <template>
 
-  <transition appear enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-on:after-leave="">
+  <transition appear enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-on:after-leave="ShowMenu(this.MenuName)">
     <div class="container-fluid p-4" v-show="deckBuilderVisible">
 
-      <p v-on:click="hideBuilder()" style="cursor: pointer;"><i class="fas fa-angle-left"></i> Back</p>
+      <p v-on:click="CloseMenu('MainMenu')" style="cursor: pointer;"><i class="fas fa-angle-left"></i> Back</p>
 
       <div class="row">
         <div class="col-12">
@@ -45,7 +45,7 @@
       <button class="btn btn-primary" v-on:click="SaveDeck()">Save Deck</button>
       <button class="btn btn-primary" v-on:click="ClearDeck()">Clear Deck</button>
 
-      <h1 v-if="responseMessage">{{ responseMessage }}</h1>
+      <h3 v-if="responseMessage">{{ responseMessage }}</h3>
 
     </div>
   </transition>
@@ -56,7 +56,13 @@ export default {
 
   created() {
     this.GetSavedDeck();
-    this.$eventHub.$on('showDeckBuilder', this.showBuilder);
+
+    this.$eventHub.$on('MenuClicked', (data) => {
+      if(data == "DeckBuilder"){
+        this.deckBuilderVisible = true
+      }
+    });
+
   },
 
   data() {
@@ -97,14 +103,15 @@ export default {
 
   methods: {
 
-    showBuilder () {
-      this.deckBuilderVisible = true;
+    ShowMenu() {
+      this.$eventHub.$emit('MenuClicked', this.NewMenu)
     },
 
-    hideBuilder () {
-      this.deckBuilderVisible = false;
-      this.$eventHub.$emit('BuilderClosed');
+    CloseMenu(MenuName) {
+      this.NewMenu = MenuName
+      this.deckBuilderVisible = false
     },
+
 
     AddCardToSideDeck(value, key) {
       if ( this.selectedCards.length < 10 ) {

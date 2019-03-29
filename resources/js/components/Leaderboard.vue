@@ -1,10 +1,10 @@
 <template>
 
-  <transition appear enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-on:after-leave="">
+  <transition appear enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-on:after-leave="ShowMenu(this.MenuName)">
 
-    <div class="container-flex" style="display:flex; justify-content:center; align-items: center;">
+      <div class="container-flex text-center" v-show="leaderboardOpen">
 
-      <div class="container text-center" v-show="leaderboardOpen">
+        <p v-on:click="CloseMenu('MainMenu')" style="cursor: pointer;"><i class="fas fa-angle-left"></i> Back</p>
 
         <h2>leaderboards</h2>
 
@@ -37,8 +37,6 @@
 
       </div>
 
-    </div>
-
   </transition>
 
 </template>
@@ -51,12 +49,12 @@ export default {
       leaderboardOpen: false,
       mostCredits: [],
       mostWins: [],
-      mostGamesPlayed: []
+      mostGamesPlayed: [],
+      NewMenu: ""
     }
   },
 
   created() {
-    this.$eventHub.$on('showLeadboards', this.showLeadboard)
 
     axios.get('/games/all').then(response => (this.openGames = response.data))
 
@@ -66,13 +64,25 @@ export default {
       this.mostGamesPlayed = response.data.games_played
     });
 
+    this.$eventHub.$on('MenuClicked', (data) => {
+      if(data == "Leaderboards"){
+        this.leaderboardOpen = true
+      }
+    });
+
   },
 
   methods: {
 
-    showLeadboard(){
-      this.leaderboardOpen = true
-    }
+    ShowMenu() {
+      this.$eventHub.$emit('MenuClicked', this.NewMenu)
+    },
+
+    CloseMenu(MenuName) {
+      this.NewMenu = MenuName
+      this.leaderboardOpen = false
+    },
+
 
   }
 

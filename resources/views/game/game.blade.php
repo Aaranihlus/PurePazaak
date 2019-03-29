@@ -1,7 +1,4 @@
 @extends('sections.layout')
-
 @section('content')
-
-<game></game>
-
+  <game></game>
 @endsection('content')

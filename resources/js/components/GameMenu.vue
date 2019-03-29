@@ -2,7 +2,7 @@
 
   <div class="container">
 
-    <transition appear enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-on:after-leave="">
+    <transition appear enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-on:after-leave="ShowMenu()">
 
       <div class="row" style="margin-top:20vh;" v-show="showGameModes">
 
@@ -14,13 +14,13 @@
 
         <div class="col-2"></div>
 
-        <div class="col-5 game-mode-panel interactive" style="background: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ), url('/images/berta-min.jpg'); background-size: cover;" v-on:click="showGameModes = false">
+        <div class="col-5 game-mode-panel interactive" style="background: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ), url('/images/berta-min.jpg'); background-size: cover;" v-on:click="CloseMenu('Versus')">
           <i class="fas fa-users fa-5x"></i>
           <h3>versus</h3>
           <p>Go head-to-head with other players</p>
         </div>
 
-        <div class="col-5 game-mode-panel interactive mt-4" style="background: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ), url('/images/ceaser-min.jpg'); background-size: cover;" v-on:click="showLeaderboards()">
+        <div class="col-5 game-mode-panel interactive mt-4" style="background: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ), url('/images/ceaser-min.jpg'); background-size: cover;" v-on:click="CloseMenu('Leaderboards')">
           <i class="fas fa-poll fa-5x"></i>
           <h3>Leaderboards</h3>
           <p>See who fortune favours the most</p>
@@ -28,7 +28,7 @@
 
         <div class="col-2"></div>
 
-        <div class="col-5 game-mode-panel interactive mt-4" style="background: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ), url('/images/dora-min.png'); background-size: cover;" v-on:click="showDeckBuilder()">
+        <div class="col-5 game-mode-panel interactive mt-4" style="background: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ), url('/images/dora-min.png'); background-size: cover;" v-on:click="CloseMenu('DeckBuilder')">
           <i class="fab fa-stack-overflow fa-5x"></i>
           <h3>Deck Builder</h3>
           <p>Build your Side Deck</p>
@@ -49,7 +49,8 @@ export default {
       showGameModes: false,
       versusChosen: false,
       createGameActive: false,
-      gameWager: 0
+      gameWager: 0,
+      NewMenu: ""
     }
   },
 
@@ -60,26 +61,16 @@ export default {
     this.$eventHub.$on('ProfileFound', this.BackToGameModes);
     this.$eventHub.$on('ProfileCreated', this.BackToGameModes);
     this.$eventHub.$on('VersusClosed', this.ShowGameModes);
+
+    this.$eventHub.$on('MenuClicked', (data) => {
+      if(data == "MainMenu"){
+        this.showGameModes = true
+      }
+    });
+
   },
 
   methods: {
-
-    showLeaderboards () {
-      this.showGameModes = false
-      this.$eventHub.$emit('showLeadboards');
-    },
-
-    showDeckBuilder () {
-      this.$eventHub.$emit('showDeckBuilder');
-    },
-
-    ShowVersus () {
-      this.$eventHub.$emit('VersusChosen');
-    },
-
-    ShowGameModes() {
-      this.showGameModes = true
-    },
 
     CreateNewGame() {
       axios.post('/game', {
@@ -97,27 +88,22 @@ export default {
       });
     },
 
-    CancelCreateGame() {
-      this.createGameActive = false;
+
+    ShowMenu() {
+      this.$eventHub.$emit('MenuClicked', this.NewMenu)
     },
 
-    OpenCreateGame() {
-      this.createGameActive = true;
-    },
-
-    ClickVersus() {
+    CloseMenu(MenuName) {
+      this.NewMenu = MenuName
       this.showGameModes = false
     },
+
 
     BackToGameModes() {
       this.versusChosen = false
       this.showGameModes = true
-    },
-
-    HideBoth () {
-      this.versusChosen = false
-      this.showGameModes = false
     }
+
 
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <transition appear enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft">
+    <transition appear enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-on:after-leave="ShowMenu(this.MenuName)">
       <div class="row" style="margin-top:25vh;" v-show="versusChosen">
         <div class="col-5 game-mode-panel interactive">
           <i class="fas fa-plus-square fa-5x"></i>
@@ -10,10 +10,10 @@
         <div class="col-2"></div>
         <div class="col-5 game-mode-panel interactive">
           <i class="fas fa-sign-in-alt fa-5x"></i>
-          <h2 v-on:click="ShowGameList()">Join Game</h2>
+          <h2 v-on:click="CloseMenu('GameList')">Join Game</h2>
           <p>Join another players public game</p>
         </div>
-        <h4 style="cursor: pointer;" v-on:click="versusChosen = false"><i class="fas fa-angle-left"></i> Back</h4>
+        <h4 style="cursor: pointer;" v-on:click="CloseMenu('MainMenu')"> <i class="fas fa-angle-left"></i> Back</h4>
       </div>
     </transition>
 
@@ -51,22 +51,24 @@ export default {
   },
 
   created() {
-    this.$eventHub.$on('VersusChosen', this.ShowVersus);
+    this.$eventHub.$on('MenuClicked', (data) => {
+      if(data == "Versus"){
+        this.versusChosen = true
+      }
+    });
   },
+
+
 
   methods: {
 
-    ShowGameList() {
-      this.versusChosen = false;
-      this.$eventHub.$emit('OpenGameList');
+    ShowMenu() {
+      this.$eventHub.$emit('MenuClicked', this.NewMenu)
     },
 
-    ShowVersus () {
-      this.versusChosen = true;
-    },
-
-    CloseVersus () {
-      this.$eventHub.$emit('VersusClosed');
+    CloseMenu(MenuName) {
+      this.NewMenu = MenuName
+      this.versusChosen = false
     },
 
     CreateNewGame() {

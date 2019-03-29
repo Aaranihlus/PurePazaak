@@ -186,13 +186,6 @@ export default {
 
     //When the current player ends their turn, make the other players turn begin, and give them the random card
     window.Echo.private('game.event.'+this.gameID).listen('PlayerEndTurn', e => {
-      if(this.currentPlayerTurn == 1){
-        this.currentPlayerTurn = 2
-        this.dealToPlayer = 2
-      } else {
-        this.currentPlayerTurn = 1
-        this.dealToPlayer = 1
-      }
       this.DealCardToPlayer(this.dealToPlayer, e.random_dealer_card);
     });
 
@@ -281,6 +274,15 @@ export default {
     },
 
     DealCardToPlayer(playerNumber, dealerCard) {
+
+      if(this.currentPlayerTurn == 1){
+        this.currentPlayerTurn = 2
+        this.dealToPlayer = 2
+      } else {
+        this.currentPlayerTurn = 1
+        this.dealToPlayer = 1
+      }
+
       this.PlaySound('DrawCard')
       this.nextDealerCard = dealerCard
       this.players[playerNumber].num_cards_in_field += 1
